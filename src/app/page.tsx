@@ -1,94 +1,111 @@
-import Link from "next/link";
-
-const categories = [
-  { name: "Espresso", path: "/category/espresso" },
-  { name: "Latte", path: "/category/latte" },
-  { name: "Cappuccino", path: "/category/cappuccino" },
-  { name: "Cold Brew", path: "/category/cold-brew" },
-  { name: "Pastries", path: "/category/pastries" },
-];
-
-const featuredItems = [
-  {
-    name: "Classic Espresso",
-    slug: "classic-espresso",
-    desc: "Rich, bold espresso shot.",
-    price: "$3.00",
-  },
-  {
-    name: "Vanilla Latte",
-    slug: "vanilla-latte",
-    desc: "Smooth espresso with vanilla.",
-    price: "$4.50",
-  },
-  {
-    name: "Iced Cold Brew",
-    slug: "iced-cold-brew",
-    desc: "Chilled, slow-brewed coffee.",
-    price: "$4.00",
-  },
-  {
-    name: "Chocolate Croissant",
-    slug: "chocolate-croissant",
-    desc: "Flaky pastry with chocolate.",
-    price: "$3.50",
-  },
-];
+"use client";
+import styles from "./page.module.css";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
 
 export default function Home() {
+  const coffeeItems = [
+    {
+      src: "/public/placeholder-cup1.svg",
+      name: "Mochaccino",
+      subtitle: "Dalgona",
+      price: 20.5,
+      desc: "Dalgona coffee Korean is a beverage made by whipping equal proportions of instant coffee powder, sugar, and hot water until it becomes creamy and then adding it to cold or hot milk.",
+    },
+    {
+      src: "/public/placeholder-cup2.svg",
+      name: "Espresso",
+      subtitle: "Classic",
+      price: 18.0,
+      desc: "Classic espresso is a full-flavored, concentrated form of coffee served in shots. It is made by forcing pressurized hot water through very finely ground coffee beans.",
+    },
+    // Add more items as needed
+  ];
+
   return (
-    <div>
-      <h1>Welcome to Cafe</h1>
-      <p>Enjoy the best coffee and pastries in town!</p>
-      <section style={{ margin: "2rem 0" }}>
-        <h2>Shop by Category</h2>
-        <ul
-          style={{
-            display: "flex",
-            gap: "2rem",
-            listStyle: "none",
-            padding: 0,
+    <div className={styles.heroBg}>
+      {/* Top Bar */}
+      <div className={styles.topBar}>
+        <img
+          src="/public/placeholder-logo.svg"
+          alt="Logo"
+          className={styles.logo}
+        />
+        <div className={styles.topIcons}>
+          <span className={styles.icon}>🔍</span>
+          <span className={styles.icon + " p-10 m-4 bg-red-500"}>☰</span>
+          <span className="text-red-500">Hello</span>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className={styles.heroContent}>
+        {/* Sidebar Pagination Navigation (global class, outside Swiper) */}
+        <div className="swiper-sidebar-pagination"></div>
+        <Swiper
+          spaceBetween={50}
+          slidesPerView={1}
+          modules={[Pagination]}
+          pagination={{
+            clickable: true,
+            renderBullet: (index, className) => {
+              return `<div class='${styles.navItem} ${className}'>${(index + 1)
+                .toString()
+                .padStart(2, "0")}</div>`;
+            },
+            // el: ".swiper-sidebar-pagination",
           }}
         >
-          {categories.map((cat) => (
-            <li key={cat.path}>
-              <Link
-                href={cat.path}
-                style={{
-                  fontWeight: 500,
-                  textDecoration: "none",
-                  color: "#333",
-                }}
-              >
-                {cat.name}
-              </Link>
-            </li>
+          {coffeeItems.map((item, idx) => (
+            <SwiperSlide key={idx}>
+              {/* Text and Actions */}
+              <div className={styles.textBlock}>
+                <h1 className={styles.title}>{item.name}</h1>
+                <h2 className={styles.subtitle}>{item.subtitle}</h2>
+                <p className={styles.desc}>{item.desc}</p>
+                <div className={styles.infoRow}>
+                  <span className={styles.price}>Price: ${item.price}</span>
+                  <a href="#" className={styles.knowRecipe}>
+                    Know Recipe &rarr;
+                  </a>
+                </div>
+                <button className={styles.addToOrder}>
+                  <span className={styles.cartIcon}>🛒</span> Add To Order
+                </button>
+              </div>
+              {/* Coffee Cups */}
+              <div className={styles.cupsBlock}>
+                <img
+                  src={item.src}
+                  alt="Coffee Cup"
+                  className={styles.cupImg}
+                />
+              </div>
+            </SwiperSlide>
           ))}
-        </ul>
-      </section>
-      <section style={{ margin: "2rem 0" }}>
-        <h2>Featured Items</h2>
-        <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
-          {featuredItems.map((item) => (
-            <div
-              key={item.slug}
-              style={{
-                background: "#fff",
-                border: "1px solid #eee",
-                borderRadius: 8,
-                padding: "1rem",
-                minWidth: 220,
-              }}
-            >
-              <h3>
-                <Link href={`/item/${item.slug}`}>{item.name}</Link>
-              </h3>
-              <p>{item.desc}</p>
-              <p style={{ fontWeight: "bold" }}>{item.price}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+        </Swiper>
+      </div>
+
+      {/* Social Links */}
+      <div className={styles.socialLinks}>
+        <a href="#">Facebook</a>
+        <a href="#">Twitter</a>
+        <a href="#">Google</a>
+      </div>
+      {/* Optional: fallback style for sidebar pagination */}
+      <style>{`
+        .swiper-sidebar-pagination {
+          display: flex;
+          flex-direction: column;
+          position: absolute;
+          left: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 10;
+        }
+      `}</style>
     </div>
   );
 }

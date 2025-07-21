@@ -35,12 +35,12 @@ export default function RootLayout({
           background: "#f5f5f5",
         }}
       >
-        <Header />
-        <Sidebar />
+        {/* <Header />
+        <Sidebar /> */}
         <main
           style={{
-            marginLeft: 240,
-            padding: "2rem 2rem 2rem 2rem",
+          
+           
             minHeight: "100vh",
           }}
         >
