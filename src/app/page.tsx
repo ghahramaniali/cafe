@@ -4,8 +4,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+import React, { useRef } from "react";
 
 export default function Home() {
+  const paginationRef = useRef(null);
   const coffeeItems = [
     {
       src: "/public/placeholder-cup1.svg",
@@ -25,7 +27,7 @@ export default function Home() {
   ];
 
   return (
-    <div className={styles.heroBg}>
+    <div className={styles.heroBg + " w-screen"}>
       {/* Top Bar */}
       <div className={styles.topBar}>
         <img
@@ -35,15 +37,14 @@ export default function Home() {
         />
         <div className={styles.topIcons}>
           <span className={styles.icon}>🔍</span>
-          <span className={styles.icon + " p-10 m-4 bg-red-500"}>☰</span>
-          <span className="text-red-500">Hello</span>
+          <span className={styles.icon}>☰</span>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className={styles.heroContent}>
-        {/* Sidebar Pagination Navigation (global class, outside Swiper) */}
-        <div className="swiper-sidebar-pagination"></div>
+      <div className=" w-full">
+        {/* Sidebar Pagination Navigation */}
+        <div ref={paginationRef} className="swiper-sidebar-pagination"></div>
         <Swiper
           spaceBetween={50}
           slidesPerView={1}
@@ -51,37 +52,38 @@ export default function Home() {
           pagination={{
             clickable: true,
             renderBullet: (index, className) => {
-              return `<div class='${styles.navItem} ${className}'>${(index + 1)
-                .toString()
-                .padStart(2, "0")}</div>`;
+              return `<div class='${styles.navItem} ${className}'>${
+                index + 1
+              }</div>`;
             },
-            // el: ".swiper-sidebar-pagination",
           }}
         >
           {coffeeItems.map((item, idx) => (
             <SwiperSlide key={idx}>
-              {/* Text and Actions */}
-              <div className={styles.textBlock}>
-                <h1 className={styles.title}>{item.name}</h1>
-                <h2 className={styles.subtitle}>{item.subtitle}</h2>
-                <p className={styles.desc}>{item.desc}</p>
-                <div className={styles.infoRow}>
-                  <span className={styles.price}>Price: ${item.price}</span>
-                  <a href="#" className={styles.knowRecipe}>
-                    Know Recipe &rarr;
-                  </a>
+              <div className="bg-gray-900 rounded-2xl mx-auto mx-8 p-8  shadow-lg flex flex-col items-center w-[90%]">
+                {/* Text and Actions */}
+                <div className={styles.textBlock}>
+                  <h1 className={styles.title}>{item.name}</h1>
+                  <h2 className={styles.subtitle}>{item.subtitle}</h2>
+                  <p className={styles.desc}>{item.desc}</p>
+                  <div className={styles.infoRow}>
+                    <span className={styles.price}>Price: ${item.price}</span>
+                    <a href="#" className={styles.knowRecipe}>
+                      Know Recipe &rarr;
+                    </a>
+                  </div>
+                  <button className={styles.addToOrder}>
+                    <span className={styles.cartIcon}>🛒</span> Add To Order
+                  </button>
                 </div>
-                <button className={styles.addToOrder}>
-                  <span className={styles.cartIcon}>🛒</span> Add To Order
-                </button>
-              </div>
-              {/* Coffee Cups */}
-              <div className={styles.cupsBlock}>
-                <img
-                  src={item.src}
-                  alt="Coffee Cup"
-                  className={styles.cupImg}
-                />
+                {/* Coffee Cups */}
+                <div className={styles.cupsBlock}>
+                  <img
+                    src={item.src}
+                    alt="Coffee Cup"
+                    className={styles.cupImg}
+                  />
+                </div>
               </div>
             </SwiperSlide>
           ))}
@@ -98,12 +100,43 @@ export default function Home() {
       <style>{`
         .swiper-sidebar-pagination {
           display: flex;
-          flex-direction: column;
+          flex-direction: row;
           position: absolute;
-          left: 0;
-          top: 50%;
-          transform: translateY(-50%);
+         
+         
+         
+        
+       
           z-index: 10;
+        }
+        /* Remove default Swiper bullet styles and show only numbers */
+        .swiper-pagination-bullet {
+          background: none !important;
+          color: #fff !important; /* or your preferred color */
+          width: auto !important;
+          height: auto !important;
+          opacity: 1 !important;
+          border-radius: 0 !important;
+          font-size: 1.2rem; /* adjust as needed */
+          margin: 4px 0 !important;
+          box-shadow: none !important;
+          border: none !important;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+        }
+        .swiper-pagination-bullet-active {
+          font-weight: bold;
+          color: #ffd700 !important; /* highlight active number */
+        }
+        .swiper-pagination {
+          display: flex !important;
+          flex-direction: row !important;
+          justify-content: center;
+          align-items: center;
+          position: static !important; /* or adjust as needed */
+          margin-top: 16px; /* optional */
         }
       `}</style>
     </div>

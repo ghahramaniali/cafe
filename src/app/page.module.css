@@ -223,6 +223,8 @@ a.secondary {
   opacity: 0.5;
   font-weight: 600;
   transition: opacity 0.2s;
+  margin: 16px 0;
+  gap: 16px;
 }
 .active {
   opacity: 1;
