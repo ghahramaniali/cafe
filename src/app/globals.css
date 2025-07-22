@@ -3,6 +3,22 @@
 @tailwind components;
 @tailwind utilities;
 
+/* IRANSansX Medium Font Declaration */
+@font-face {
+  font-family: "IRANSansX Medium";
+  src: url("/fonts/IRANSansX Medium/Web Fonts/30d96e26d791255c14298567c0abc459.woff2")
+      format("woff2"),
+    url("/fonts/IRANSansX Medium/Web Fonts/30d96e26d791255c14298567c0abc459.woff")
+      format("woff"),
+    url("/fonts/IRANSansX Medium/Web Fonts/30d96e26d791255c14298567c0abc459.ttf")
+      format("truetype"),
+    url("/fonts/IRANSansX Medium/Web Fonts/30d96e26d791255c14298567c0abc459.eot")
+      format("embedded-opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --background: #fafbfc;
   --foreground: #18181b;
@@ -25,7 +41,7 @@ body {
   overflow-x: hidden;
   font-size: 18px;
   line-height: 1.7;
-  font-family: "Inter", "Geist", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-family: "IRANSansX Medium", "Tahoma", "Arial", sans-serif;
   background: var(--background);
   color: var(--foreground);
   transition: background 0.3s, color 0.3s;

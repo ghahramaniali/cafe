@@ -1,144 +1,284 @@
 "use client";
 import styles from "./page.module.css";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/pagination";
-import React, { useRef } from "react";
+import React from "react";
+import Image from "next/image";
 
 export default function Home() {
-  const paginationRef = useRef(null);
-  const coffeeItems = [
+  const bestsellers = [
     {
-      src: "/public/placeholder-cup1.svg",
-      name: "Mochaccino",
-      subtitle: "Dalgona",
-      price: 20.5,
-      desc: "Dalgona coffee Korean is a beverage made by whipping equal proportions of instant coffee powder, sugar, and hot water until it becomes creamy and then adding it to cold or hot milk.",
+      name: "لاته",
+      desc: "قهوه 50% | شیر 50%",
+      price: "46000 تومان",
+      image: "/menu-items/latte.png",
     },
     {
-      src: "/public/placeholder-cup2.svg",
-      name: "Espresso",
-      subtitle: "Classic",
-      price: 18.0,
-      desc: "Classic espresso is a full-flavored, concentrated form of coffee served in shots. It is made by forcing pressurized hot water through very finely ground coffee beans.",
+      name: "ماکیاتو",
+      desc: "قهوه 50% | شیر 50%",
+      price: "46000 تومان",
+      image: "/menu-items/cappuccino.png",
     },
-    // Add more items as needed
+    {
+      name: "اسپرسو",
+      desc: "قهوه 50% | شیر 50%",
+      price: "46000 تومان",
+      image: "/menu-items/espresso.png",
+    },
+    {
+      name: "کاپوچینو",
+      desc: "قهوه 50% | شیر 50%",
+      price: "46000 تومان",
+      image: "/menu-items/cappuccino.png",
+    },
+  ];
+
+  const popularProducts = [
+    {
+      name: "اسپرسو",
+      desc: "قهوه 50% | شیر 50%",
+      price: "46000 تومان",
+      image: "/menu-items/espresso.png",
+    },
+    {
+      name: "کاپوچینو",
+      desc: "قهوه 50% | شیر 50%",
+      price: "46000 تومان",
+      image: "/menu-items/cappuccino.png",
+    },
+    {
+      name: "ماکیاتو",
+      desc: "قهوه 50% | شیر 50%",
+      price: "46000 تومان",
+      image: "/menu-items/cappuccino.png",
+    },
+    {
+      name: "لاته",
+      desc: "قهوه 50% | شیر 50%",
+      price: "46000 تومان",
+      image: "/menu-items/latte.png",
+    },
+  ];
+
+  const testimonials = [
+    {
+      name: "امین وطن پرست",
+      text: "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.",
+    },
+    {
+      name: "اشکان محمدی",
+      text: "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.",
+    },
+    {
+      name: "صالح بهرامی",
+      text: "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.",
+    },
   ];
 
   return (
-    <div className={styles.heroBg + " w-screen"}>
-      {/* Top Bar */}
-      <div className={styles.topBar}>
-        <img
-          src="/public/placeholder-logo.svg"
-          alt="Logo"
-          className={styles.logo}
-        />
-        <div className={styles.topIcons}>
-          <span className={styles.icon}>🔍</span>
-          <span className={styles.icon}>☰</span>
+    <div className={styles.container}>
+      {/* Header */}
+      <header className={styles.header}>
+        <nav className={styles.nav}>
+          <div className={styles.navLinks}>
+            <a href="#">فروشگاه</a>
+            <a href="#">پشتیبانی</a>
+            <a href="#">ارتباط با ما</a>
+            <a href="#">درباره ما</a>
+            <a href="#">بلاگ</a>
+          </div>
+          <div className={styles.logo}>
+            <div className={styles.logoIcon}>☕</div>
+            <span>CAFENA</span>
+          </div>
+          <div className={styles.userIcons}>
+            <span>🔍</span>
+            <span>🛒</span>
+            <span>👤</span>
+          </div>
+        </nav>
+      </header>
+
+      {/* Hero Section */}
+      <section className={styles.hero}>
+        <div className={styles.heroContent}>
+          <div className={styles.heroText}>
+            <h1>خرید آنلاین انواع قهوه</h1>
+            <p>
+              فروشگاه اینترنتی قهوه، خرید انواع پودر و دان قهوه با قیمت مناسب
+            </p>
+            <button className={styles.ctaButton}>خرید و مشاوره</button>
+          </div>
+          <div className={styles.heroImage}>
+            <Image
+              src="/images/Cup1.png"
+              alt="Hero Image"
+              width={500}
+              height={500}
+            />
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* Main Content */}
-      <div className=" w-full">
-        {/* Sidebar Pagination Navigation */}
-        <div ref={paginationRef} className="swiper-sidebar-pagination"></div>
-        <Swiper
-          spaceBetween={50}
-          slidesPerView={1}
-          modules={[Pagination]}
-          pagination={{
-            clickable: true,
-            renderBullet: (index, className) => {
-              return `<div class='${styles.navItem} ${className}'>${
-                index + 1
-              }</div>`;
-            },
-          }}
-        >
-          {coffeeItems.map((item, idx) => (
-            <SwiperSlide key={idx}>
-              <div className="bg-gray-900 rounded-2xl mx-auto mx-8 p-8  shadow-lg flex flex-col items-center w-[90%]">
-                {/* Text and Actions */}
-                <div className={styles.textBlock}>
-                  <h1 className={styles.title}>{item.name}</h1>
-                  <h2 className={styles.subtitle}>{item.subtitle}</h2>
-                  <p className={styles.desc}>{item.desc}</p>
-                  <div className={styles.infoRow}>
-                    <span className={styles.price}>Price: ${item.price}</span>
-                    <a href="#" className={styles.knowRecipe}>
-                      Know Recipe &rarr;
-                    </a>
-                  </div>
-                  <button className={styles.addToOrder}>
-                    <span className={styles.cartIcon}>🛒</span> Add To Order
-                  </button>
-                </div>
-                {/* Coffee Cups */}
-                <div className={styles.cupsBlock}>
-                  <img
-                    src={item.src}
-                    alt="Coffee Cup"
-                    className={styles.cupImg}
-                  />
-                </div>
-              </div>
-            </SwiperSlide>
+      {/* Product Categories */}
+      <section className={styles.categories}>
+        <h2>دسته بندی محصولات</h2>
+        <div className={styles.categoryGrid}>
+          <div className={styles.categoryCard}>
+            <div className={styles.categoryIcon}>☕</div>
+            <span>تجهیزات</span>
+          </div>
+          <div className={styles.categoryCard}>
+            <div className={styles.categoryIcon}>🥤</div>
+            <span>میکس های اسپرسو</span>
+          </div>
+          <div className={styles.categoryCard}>
+            <div className={styles.categoryIcon}>📦</div>
+            <span>بیرون بر</span>
+          </div>
+          <div className={styles.categoryCard}>
+            <div className={styles.categoryIcon}>🫘</div>
+            <span>انواع قهوه</span>
+          </div>
+          <div className={styles.categoryCard}>
+            <div className={styles.categoryIcon}>🥐</div>
+            <span>شیرینی</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Bestsellers */}
+      <section className={styles.bestsellers}>
+        <h2>پرفروش ترین ها</h2>
+        <div className={styles.productGrid}>
+          {bestsellers.map((product, index) => (
+            <div key={index} className={styles.productCard}>
+              <img src={product.image} alt={product.name} />
+              <h3>{product.name}</h3>
+              <p>{product.desc}</p>
+              <div className={styles.productPrice}>{product.price}</div>
+              <button className={styles.orderButton}>سفارش</button>
+            </div>
           ))}
-        </Swiper>
-      </div>
+        </div>
+      </section>
 
-      {/* Social Links */}
-      <div className={styles.socialLinks}>
-        <a href="#">Facebook</a>
-        <a href="#">Twitter</a>
-        <a href="#">Google</a>
-      </div>
-      {/* Optional: fallback style for sidebar pagination */}
-      <style>{`
-        .swiper-sidebar-pagination {
-          display: flex;
-          flex-direction: row;
-          position: absolute;
-         
-         
-         
-        
-       
-          z-index: 10;
-        }
-        /* Remove default Swiper bullet styles and show only numbers */
-        .swiper-pagination-bullet {
-          background: none !important;
-          color: #fff !important; /* or your preferred color */
-          width: auto !important;
-          height: auto !important;
-          opacity: 1 !important;
-          border-radius: 0 !important;
-          font-size: 1.2rem; /* adjust as needed */
-          margin: 4px 0 !important;
-          box-shadow: none !important;
-          border: none !important;
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          justify-content: center;
-        }
-        .swiper-pagination-bullet-active {
-          font-weight: bold;
-          color: #ffd700 !important; /* highlight active number */
-        }
-        .swiper-pagination {
-          display: flex !important;
-          flex-direction: row !important;
-          justify-content: center;
-          align-items: center;
-          position: static !important; /* or adjust as needed */
-          margin-top: 16px; /* optional */
-        }
-      `}</style>
+      {/* Instant Coffee Promotion */}
+      <section className={styles.instantCoffee}>
+        <div className={styles.instantContent}>
+          <div className={styles.instantImage}>
+            <div className={styles.cupsIllustration}>
+              <div className={styles.cup1}></div>
+              <div className={styles.cup2}></div>
+              <div className={styles.spillingCoffee}></div>
+            </div>
+          </div>
+          <div className={styles.instantText}>
+            <h2>انواع قهوه فوری</h2>
+            <p>
+              انواع قهوه فوری کلاسیک، کافی میکس، کافی میت، کاپوچینو، لاته،
+              موکاچینو، هات چاکلت و نسکافه گلد
+            </p>
+            <button className={styles.buyNowButton}>همین حالا خرید کن</button>
+          </div>
+        </div>
+      </section>
+
+      {/* Most Popular */}
+      <section className={styles.popular}>
+        <h2>محبوب ترین ها</h2>
+        <div className={styles.productGrid}>
+          {popularProducts.map((product, index) => (
+            <div key={index} className={styles.productCard}>
+              <img src={product.image} alt={product.name} />
+              <h3>{product.name}</h3>
+              <p>{product.desc}</p>
+              <div className={styles.productPrice}>{product.price}</div>
+              <button className={styles.orderButton}>سفارش</button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className={styles.testimonials}>
+        <h2>نظرات مشتریان</h2>
+        <div className={styles.testimonialGrid}>
+          {testimonials.map((testimonial, index) => (
+            <div key={index} className={styles.testimonialCard}>
+              <div className={styles.stars}>★★★★★</div>
+              <p>{testimonial.text}</p>
+              <h4>{testimonial.name}</h4>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className={styles.footer}>
+        <div className={styles.footerContent}>
+          <div className={styles.footerSection}>
+            <div className={styles.footerLogo}>
+              <div className={styles.logoIcon}>☕</div>
+              <span>CAFENA</span>
+            </div>
+            <div className={styles.contactInfo}>
+              <p>شنبه تا پنج شنبه ۱۰ صبح تا ۱۷ بعد از ظهر</p>
+              <p>جمعه ۱۰ صبح تا ۱۴ بعد از ظهر</p>
+              <p>مشهد خیابان مطهری، مطهری 36، پلاک 10</p>
+              <p>cafena@coffee.com</p>
+              <p>02192024359</p>
+            </div>
+          </div>
+
+          <div className={styles.footerSection}>
+            <div className={styles.quickLinks}>
+              <h4>دسترسی سریع</h4>
+              <a href="#">قهوه</a>
+              <a href="#">نوشیدنی پودری و فوری</a>
+              <a href="#">چای و دمنوش</a>
+              <a href="#">خوشمزه ها</a>
+              <a href="#">تجهیزات قهوه</a>
+            </div>
+            <div className={styles.contactLinks}>
+              <h4>ارتباط با ما</h4>
+              <a href="#">درباره ما</a>
+              <a href="#">پشتیبانی</a>
+              <a href="#">ارتباط با ما</a>
+              <a href="#">قوانین و مقررات</a>
+              <a href="#">راهنمای خرید آنلاین</a>
+            </div>
+          </div>
+
+          <div className={styles.footerSection}>
+            <div className={styles.companyDesc}>
+              <p>
+                لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با
+                استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله
+                در ستون و سطرآنچنان که لازم است.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.newsletter}>
+          <h4>اطلاع رسانی</h4>
+          <p>ایمیلتان را وارد کنید تا از تخفیف ها باخبر شوید.</p>
+          <div className={styles.newsletterForm}>
+            <input type="email" placeholder="ایمیل خود را وارد کنید." />
+            <button>ارسال</button>
+          </div>
+        </div>
+
+        <div className={styles.footerBottom}>
+          <p>کلیه حقوق این سایت متعلق به قهوه کافینا می باشد.</p>
+          <div className={styles.socialIcons}>
+            <span>📘</span>
+            <span>🐦</span>
+            <span>📷</span>
+            <span>📌</span>
+            <span>🔍</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

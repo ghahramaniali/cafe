@@ -80,8 +80,9 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ["Kalameh", "Arial", "sans-serif"],
-        kalameh: ["Kalameh"],
+        sans: ["IRANSansX Medium", "Tahoma", "Arial", "sans-serif"],
+        kalameh: ["IRANSansX Medium"],
+        iransans: ["IRANSansX Medium"],
       },
       spacing: {
         4.5: "18px",

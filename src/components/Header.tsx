@@ -18,6 +18,7 @@ const Header = () => (
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
+      fontFamily: "IRANSansX Medium, Tahoma, Arial, sans-serif",
     }}
   >
     <Link
@@ -27,6 +28,7 @@ const Header = () => (
         fontSize: "1.5rem",
         textDecoration: "none",
         color: "#333",
+        fontFamily: "IRANSansX Medium, Tahoma, Arial, sans-serif",
       }}
     >
       Cafe
@@ -39,13 +41,19 @@ const Header = () => (
           listStyle: "none",
           margin: 0,
           padding: 0,
+          fontFamily: "IRANSansX Medium, Tahoma, Arial, sans-serif",
         }}
       >
         {categories.map((cat) => (
           <li key={cat.path}>
             <Link
               href={cat.path}
-              style={{ textDecoration: "none", color: "#333", fontWeight: 500 }}
+              style={{
+                textDecoration: "none",
+                color: "#333",
+                fontWeight: 500,
+                fontFamily: "IRANSansX Medium, Tahoma, Arial, sans-serif",
+              }}
             >
               {cat.name}
             </Link>
