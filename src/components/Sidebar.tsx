@@ -12,6 +12,7 @@ const Sidebar = () => (
       position: "fixed",
       top: 0,
       left: 0,
+      fontFamily: "IRANSansX Medium, Tahoma, Arial, sans-serif",
     }}
   >
     <nav>
@@ -23,34 +24,98 @@ const Sidebar = () => (
           display: "flex",
           flexDirection: "column",
           gap: "1.5rem",
+          fontFamily: "IRANSansX Medium, Tahoma, Arial, sans-serif",
         }}
       >
         <li>
-          <Link href="/">Home</Link>
+          <Link
+            href="/"
+            style={{
+              fontFamily: "IRANSansX Medium, Tahoma, Arial, sans-serif",
+            }}
+          >
+            Home
+          </Link>
         </li>
         <li>
-          <Link href="/menu">Menu</Link>
+          <Link
+            href="/menu"
+            style={{
+              fontFamily: "IRANSansX Medium, Tahoma, Arial, sans-serif",
+            }}
+          >
+            Menu
+          </Link>
         </li>
         <li>
-          <Link href="/about">About</Link>
+          <Link
+            href="/about"
+            style={{
+              fontFamily: "IRANSansX Medium, Tahoma, Arial, sans-serif",
+            }}
+          >
+            About
+          </Link>
         </li>
-        <li style={{ marginTop: "2rem", fontWeight: "bold", color: "#888" }}>
+        <li
+          style={{
+            marginTop: "2rem",
+            fontWeight: "bold",
+            color: "#888",
+            fontFamily: "IRANSansX Medium, Tahoma, Arial, sans-serif",
+          }}
+        >
           Categories
         </li>
         <li>
-          <Link href="/category/espresso">Espresso</Link>
+          <Link
+            href="/category/espresso"
+            style={{
+              fontFamily: "IRANSansX Medium, Tahoma, Arial, sans-serif",
+            }}
+          >
+            Espresso
+          </Link>
         </li>
         <li>
-          <Link href="/category/latte">Latte</Link>
+          <Link
+            href="/category/latte"
+            style={{
+              fontFamily: "IRANSansX Medium, Tahoma, Arial, sans-serif",
+            }}
+          >
+            Latte
+          </Link>
         </li>
         <li>
-          <Link href="/category/cappuccino">Cappuccino</Link>
+          <Link
+            href="/category/cappuccino"
+            style={{
+              fontFamily: "IRANSansX Medium, Tahoma, Arial, sans-serif",
+            }}
+          >
+            Cappuccino
+          </Link>
         </li>
         <li>
-          <Link href="/category/cold-brew">Cold Brew</Link>
+          <Link
+            href="/category/cold-brew"
+            style={{
+              fontFamily: "IRANSansX Medium, Tahoma, Arial, sans-serif",
+            }}
+          >
+            Cold Brew
+          </Link>
         </li>
         <li>
-          <Link href="/category/pastries">Pastries</Link>
+          <Link
+            href="/category/pastries"
+            style={{
+              fontFamily: "IRANSansX Medium, Tahoma, Arial, sans-serif",
+            }}
+          >
+            Pastries
+          </Link>
         </li>
       </ul>
     </nav>

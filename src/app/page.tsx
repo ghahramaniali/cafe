@@ -79,20 +79,11 @@ export default function Home() {
       <header className={styles.header}>
         <nav className={styles.nav}>
           <div className={styles.navLinks}>
-            <a href="#">فروشگاه</a>
-            <a href="#">پشتیبانی</a>
+            <Image src="/logo-leon.png" alt="logo" width={70} height={70} />
+            <a href="#">منوی فروشگاه</a>
+
             <a href="#">ارتباط با ما</a>
             <a href="#">درباره ما</a>
-            <a href="#">بلاگ</a>
-          </div>
-          <div className={styles.logo}>
-            <div className={styles.logoIcon}>☕</div>
-            <span>CAFENA</span>
-          </div>
-          <div className={styles.userIcons}>
-            <span>🔍</span>
-            <span>🛒</span>
-            <span>👤</span>
           </div>
         </nav>
       </header>
@@ -101,8 +92,10 @@ export default function Home() {
       <section className={styles.hero}>
         <div className={styles.heroContent}>
           <div className={styles.heroText}>
-            <h1>خرید آنلاین انواع قهوه</h1>
-            <p>
+            <h1 className={`${styles.heroText} ${styles.gradientText}`}>
+              خرید آنلاین انواع قهوه
+            </h1>
+            <p style={{ color: "#DABB9E" }}>
               فروشگاه اینترنتی قهوه، خرید انواع پودر و دان قهوه با قیمت مناسب
             </p>
             <button className={styles.ctaButton}>خرید و مشاوره</button>

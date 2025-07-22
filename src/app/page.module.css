@@ -30,11 +30,12 @@
 
 .navLinks {
   display: flex;
+  align-items: center;
   gap: 2rem;
 }
 
 .navLinks a {
-  color: #fff;
+  color: #DABB9E;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.3s;
@@ -80,7 +81,8 @@
   padding: 8rem 2rem 6rem 2rem;
   position: relative;
   overflow: hidden;
-  min-height: 80vh;
+  min-height: 100vh;
+  height: 100vh;
   display: flex;
   align-items: center;
 }
@@ -161,11 +163,24 @@
 }
 
 .heroText h1 {
-  font-size: 3.5rem;
+  font-size: 3rem;
   font-weight: bold;
   margin-bottom: 1.5rem;
-  line-height: 1.2;
+  line-height: 1.4;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.gradientText {
+  background: linear-gradient(
+    to right,
+    #f8e4be 20%,
+    #fff3e0 37%,
+    #fff8e8 52%,
+    #dfc39d 73%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .heroText p {
@@ -177,11 +192,12 @@
 }
 
 .ctaButton {
-  background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
-  color: #fff;
-  border: 2px solid #d4af37;
+  background-color: rgba(247, 225, 188, 0.3);
+  color: #f8e4be;
+  border: 2px solid #f8e4be;
   padding: 1.2rem 2.5rem;
   border-radius: 50px;
+  min-width: 250px;
   font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;
@@ -323,7 +339,7 @@
 .categories h2 {
   text-align: center;
   font-size: 2.5rem;
-  color: #8b4513;
+  color: #54372b;
   margin-bottom: 3rem;
   font-weight: bold;
 }
@@ -337,7 +353,13 @@
 }
 
 .categoryCard {
-  background: #f8f5f0;
+  background: linear-gradient(
+    135deg,
+    #7d5647 0%,
+    #775142 5%,
+    #54372b 15%,
+    #25181a 100%
+  );
   border-radius: 15px;
   padding: 2rem;
   text-align: center;
@@ -360,7 +382,7 @@
 .categoryCard span {
   font-size: 1.1rem;
   font-weight: bold;
-  color: #8b4513;
+  color: #f8e4be;
 }
 
 /* Product Sections */
@@ -753,6 +775,20 @@
 
   .heroText h1 {
     font-size: 2rem;
+  }
+  .heroTextTitle {
+    font-size: 2rem;
+    background: linear-gradient(
+      to right,
+      #f8e4be 20%,
+      #fff3e0 37%,
+      #fff8e8 52%,
+      #dfc39d 73%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
   }
 
   .instantContent {
