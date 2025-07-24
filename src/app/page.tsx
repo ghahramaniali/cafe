@@ -121,11 +121,7 @@ export default function Home() {
       <section className={styles.instantCoffee}>
         <div className={styles.instantContent}>
           <div className={styles.instantImage}>
-            <div className={styles.cupsIllustration}>
-              <div className={styles.cup1}></div>
-              <div className={styles.cup2}></div>
-              <div className={styles.spillingCoffee}></div>
-            </div>
+          <Image src="/images/coffee-couple.png" alt="logo" width={200} height={70} />
           </div>
           <div className={styles.instantText}>
             <h2>انواع قهوه فوری</h2>
@@ -133,7 +129,7 @@ export default function Home() {
               انواع قهوه فوری کلاسیک، کافی میکس، کافی میت، کاپوچینو، لاته،
               موکاچینو، هات چاکلت و نسکافه گلد
             </p>
-            <button className={styles.buyNowButton}>همین حالا خرید کن</button>
+            <button className={styles.orderButton}>همین حالا خرید کن</button>
           </div>
         </div>
       </section>

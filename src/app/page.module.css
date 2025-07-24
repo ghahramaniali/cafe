@@ -470,8 +470,8 @@
 
 /* Instant Coffee Section */
 .instantCoffee {
-  background: #8b4513;
-  padding: 4rem 2rem;
+  background: #54372B;
+  padding: 2rem 2rem;
   color: #fff;
 }
 
@@ -842,4 +842,16 @@
   .testimonialGrid {
     grid-template-columns: 1fr;
   }
+}
+.orderButton {
+  background: linear-gradient(90deg, #c7904b 0%, #7c4d1e 100%);
+  color: #fff;
+  border: none;
+  border-radius: 0.7rem;
+  padding: 0.6rem 1.6rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.18s;
+  box-shadow: 0 2px 8px rgba(199, 144, 75, 0.08);
 }
