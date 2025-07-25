@@ -12,8 +12,7 @@ router.post('/register', [
   body('username').isLength({ min: 3 }).withMessage('Username must be at least 3 characters'),
   body('email').isEmail().withMessage('Please enter a valid email'),
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-  body('first_name').notEmpty().withMessage('First name is required'),
-  body('last_name').notEmpty().withMessage('Last name is required')
+  body('name').notEmpty().withMessage('Name is required')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -21,7 +20,7 @@ router.post('/register', [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { username, email, password, first_name, last_name, phone } = req.body;
+    const { username, email, password, name, phone } = req.body;
 
     // Check if user already exists
     const userExists = await pool.query(
@@ -39,8 +38,8 @@ router.post('/register', [
 
     // Create user
     const result = await pool.query(
-      'INSERT INTO users (username, email, password_hash, first_name, last_name, phone) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, username, email, first_name, last_name, is_admin',
-      [username, email, passwordHash, first_name, last_name, phone]
+      'INSERT INTO users (username, email, password, name, phone) VALUES ($1, $2, $3, $4, $5) RETURNING id, username, email, name, is_admin',
+      [username, email, passwordHash, name, phone]
     );
 
     const user = result.rows[0];
@@ -59,8 +58,7 @@ router.post('/register', [
         id: user.id,
         username: user.username,
         email: user.email,
-        first_name: user.first_name,
-        last_name: user.last_name,
+        name: user.name,
         is_admin: user.is_admin
       }
     });
@@ -73,7 +71,7 @@ router.post('/register', [
 
 // Login user
 router.post('/login', [
-  body('email').isEmail().withMessage('Please enter a valid email'),
+  body('username').notEmpty().withMessage('Username is required'),
   body('password').notEmpty().withMessage('Password is required')
 ], async (req, res) => {
   try {
@@ -82,12 +80,12 @@ router.post('/login', [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
-    // Check if user exists
+    // Check if user exists by username
     const result = await pool.query(
-      'SELECT * FROM users WHERE email = $1 AND is_active = true',
-      [email]
+      'SELECT * FROM users WHERE username = $1',
+      [username]
     );
 
     if (result.rows.length === 0) {
@@ -97,7 +95,7 @@ router.post('/login', [
     const user = result.rows[0];
 
     // Check password
-    const isMatch = await bcrypt.compare(password, user.password_hash);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
@@ -116,15 +114,14 @@ router.post('/login', [
         id: user.id,
         username: user.username,
         email: user.email,
-        first_name: user.first_name,
-        last_name: user.last_name,
+        name: user.name,
         is_admin: user.is_admin
       }
     });
 
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -136,14 +133,45 @@ router.get('/me', auth, async (req, res) => {
         id: req.user.id,
         username: req.user.username,
         email: req.user.email,
-        first_name: req.user.first_name,
-        last_name: req.user.last_name,
+        name: req.user.name,
         is_admin: req.user.is_admin
       }
     });
   } catch (error) {
     console.error('Get user error:', error);
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Debug endpoint to test token
+router.post('/debug-token', async (req, res) => {
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    
+    if (!token) {
+      return res.status(400).json({ message: 'No token provided' });
+    }
+
+    console.log('Debug endpoint - Token:', token);
+    console.log('Debug endpoint - JWT_SECRET exists:', !!process.env.JWT_SECRET);
+    
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log('Debug endpoint - Decoded token:', decoded);
+    
+    const result = await pool.query('SELECT id, username, email, is_admin FROM users WHERE id = $1', [decoded.userId]);
+    
+    res.json({
+      tokenValid: true,
+      decoded,
+      user: result.rows[0] || null,
+      userExists: result.rows.length > 0
+    });
+  } catch (error) {
+    console.log('Debug endpoint - Error:', error.message);
+    res.status(400).json({ 
+      tokenValid: false, 
+      error: error.message 
+    });
   }
 });
 

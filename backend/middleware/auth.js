@@ -5,20 +5,33 @@ const auth = async (req, res, next) => {
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '');
     
+    console.log('Auth middleware - Token received:', token ? 'Yes' : 'No');
+    console.log('Auth middleware - JWT_SECRET exists:', !!process.env.JWT_SECRET);
+    
     if (!token) {
+      console.log('Auth middleware - No token provided');
       return res.status(401).json({ message: 'No token, authorization denied' });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const result = await pool.query('SELECT * FROM users WHERE id = $1 AND is_active = true', [decoded.userId]);
+    console.log('Auth middleware - Token decoded successfully:', { userId: decoded.userId });
+    
+    const result = await pool.query('SELECT * FROM users WHERE id = $1', [decoded.userId]);
+    console.log('Auth middleware - Database query result:', { 
+      rowsFound: result.rows.length,
+      userFound: result.rows.length > 0 ? { id: result.rows[0].id, username: result.rows[0].username } : null
+    });
     
     if (result.rows.length === 0) {
+      console.log('Auth middleware - User not found or not active');
       return res.status(401).json({ message: 'Token is not valid' });
     }
 
     req.user = result.rows[0];
+    console.log('Auth middleware - Authentication successful for user:', req.user.username);
     next();
   } catch (error) {
+    console.log('Auth middleware - Error:', error.message);
     res.status(401).json({ message: 'Token is not valid' });
   }
 };

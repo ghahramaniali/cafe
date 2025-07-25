@@ -1,9 +1,49 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const pool = require('../config/database');
 const { adminAuth } = require('../middleware/auth');
 
 const router = express.Router();
+
+// Configure multer for product image uploads
+const uploadsDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadsDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const ext = path.extname(file.originalname);
+    cb(null, 'product-' + uniqueSuffix + ext);
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = /jpeg|jpg|png|gif|webp/;
+  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = allowedTypes.test(file.mimetype);
+
+  if (mimetype && extname) {
+    return cb(null, true);
+  } else {
+    cb(new Error('Only image files are allowed!'), false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  },
+  fileFilter: fileFilter
+});
 
 // Get all products
 router.get('/', async (req, res) => {
@@ -66,7 +106,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Create new product (Admin only)
+// Create new product (Admin only) - JSON only
 router.post('/', adminAuth, [
   body('name').notEmpty().withMessage('Name is required'),
   body('category_id').isUUID().withMessage('Valid category ID is required'),
@@ -108,6 +148,63 @@ router.post('/', adminAuth, [
     res.status(201).json(result.rows[0]);
   } catch (error) {
     console.error('Create product error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Create new product with image upload (Admin only)
+router.post('/with-image', adminAuth, upload.single('image'), [
+  body('name').notEmpty().withMessage('Name is required'),
+  body('category_id').isUUID().withMessage('Valid category ID is required'),
+  body('price').isFloat({ min: 0 }).withMessage('Valid price is required'),
+  body('description').optional(),
+  body('is_available').optional().isBoolean(),
+  body('is_favorite').optional().isBoolean()
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { 
+      name, 
+      category_id, 
+      price, 
+      description, 
+      is_available = true, 
+      is_favorite = false 
+    } = req.body;
+
+    // Check if category exists
+    const categoryResult = await pool.query('SELECT id FROM categories WHERE id = $1', [category_id]);
+    if (categoryResult.rows.length === 0) {
+      return res.status(400).json({ message: 'Category not found' });
+    }
+
+    // Handle image upload
+    let imageUrl = null;
+    if (req.file) {
+      imageUrl = `/uploads/${req.file.filename}`;
+    }
+    
+    const result = await pool.query(
+      `INSERT INTO products (name, category_id, price, description, image_url, is_available, is_favorite) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7) 
+       RETURNING *`,
+      [name, category_id, price, description, imageUrl, is_available, is_favorite]
+    );
+
+    res.status(201).json({
+      ...result.rows[0],
+      uploadedImage: req.file ? {
+        filename: req.file.filename,
+        originalName: req.file.originalname,
+        size: req.file.size
+      } : null
+    });
+  } catch (error) {
+    console.error('Create product with image error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -223,6 +320,22 @@ router.get('/search/:query', async (req, res) => {
     console.error('Search products error:', error);
     res.status(500).json({ message: 'Server error' });
   }
+});
+
+// Error handling middleware for multer
+router.use((error, req, res, next) => {
+  if (error instanceof multer.MulterError) {
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ message: 'File too large. Maximum size is 5MB' });
+    }
+    return res.status(400).json({ message: error.message });
+  }
+  
+  if (error.message === 'Only image files are allowed!') {
+    return res.status(400).json({ message: error.message });
+  }
+  
+  next(error);
 });
 
 module.exports = router; 

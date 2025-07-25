@@ -1,393 +1,324 @@
 "use client";
-import React, { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
+import React, { useState, useEffect } from "react";
 import styles from "./dashboard.module.css";
+import { Product, Category, Review, Stats } from "../../../types/admin";
+import OverviewSection from "../../../components/admin/OverviewSection";
+import ProductsSection from "../../../components/admin/ProductsSection";
+import CategoriesSection from "../../../components/admin/CategoriesSection";
+import ReviewsSection from "../../../components/admin/ReviewsSection";
+import SettingsSection from "../../../components/admin/SettingsSection";
+import Sidebar from "../../../components/admin/Sidebar";
+import Header from "../../../components/admin/Header";
+
+// API Base URL
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+
+// API Service Functions
+const apiService = {
+  // Products
+  async getProducts(): Promise<Product[]> {
+    const response = await fetch(`${API_BASE_URL}/products`);
+    if (!response.ok) throw new Error("Failed to fetch products");
+    return response.json();
+  },
+
+  async createProduct(productData: Partial<Product>): Promise<Product> {
+    const response = await fetch(`${API_BASE_URL}/products`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+      },
+      body: JSON.stringify(productData),
+    });
+    if (!response.ok) throw new Error("Failed to create product");
+    return response.json();
+  },
+
+  async createProductWithImage(
+    productData: Partial<Product>,
+    imageFile?: File
+  ): Promise<Product> {
+    const formData = new FormData();
+
+    // Add product data
+    Object.entries(productData).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formData.append(key, value.toString());
+      }
+    });
+
+    // Add image file if provided
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+
+    const response = await fetch(`${API_BASE_URL}/products/with-image`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+      },
+      body: formData,
+    });
+    if (!response.ok) throw new Error("Failed to create product with image");
+    return response.json();
+  },
+
+  async updateProduct(
+    id: string,
+    productData: Partial<Product>
+  ): Promise<Product> {
+    const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+      },
+      body: JSON.stringify(productData),
+    });
+    if (!response.ok) throw new Error("Failed to update product");
+    return response.json();
+  },
+
+  async deleteProduct(id: string): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+      },
+    });
+    if (!response.ok) throw new Error("Failed to delete product");
+  },
+
+  // Categories
+  async getCategories(): Promise<Category[]> {
+    const response = await fetch(`${API_BASE_URL}/categories`);
+    if (!response.ok) throw new Error("Failed to fetch categories");
+    return response.json();
+  },
+
+  async createCategory(categoryData: Partial<Category>): Promise<Category> {
+    const response = await fetch(`${API_BASE_URL}/categories`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+      },
+      body: JSON.stringify(categoryData),
+    });
+    if (!response.ok) throw new Error("Failed to create category");
+    return response.json();
+  },
+
+  async updateCategory(
+    id: string,
+    categoryData: Partial<Category>
+  ): Promise<Category> {
+    const response = await fetch(`${API_BASE_URL}/categories/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+      },
+      body: JSON.stringify(categoryData),
+    });
+    if (!response.ok) throw new Error("Failed to update category");
+    return response.json();
+  },
+
+  async deleteCategory(id: string): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/categories/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+      },
+    });
+    if (!response.ok) throw new Error("Failed to delete category");
+  },
+
+  // Reviews
+  async getReviews(): Promise<Review[]> {
+    const response = await fetch(`${API_BASE_URL}/reviews`);
+    if (!response.ok) throw new Error("Failed to fetch reviews");
+    return response.json();
+  },
+
+  async approveReview(id: string): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/reviews/${id}/approve`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+      },
+    });
+    if (!response.ok) throw new Error("Failed to approve review");
+  },
+
+  async rejectReview(id: string): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/reviews/${id}/reject`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+      },
+    });
+    if (!response.ok) throw new Error("Failed to reject review");
+  },
+
+  async deleteReview(id: string): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/reviews/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+      },
+    });
+    if (!response.ok) throw new Error("Failed to delete review");
+  },
+};
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Mock data for dashboard
-  const stats = {
-    totalProducts: 24,
-    totalCategories: 8,
-    totalReviews: 156,
-    activeCustomers: 89,
+  // Data states
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
+
+  // Stats calculation - memoized to prevent unnecessary recalculations
+  const stats: Stats = React.useMemo(
+    () => ({
+      totalProducts: products.length,
+      totalCategories: categories.length,
+      totalReviews: reviews.length,
+      activeCustomers: reviews.reduce((acc: string[], review) => {
+        if (!acc.includes(review.user_id)) acc.push(review.user_id);
+        return acc;
+      }, []).length,
+    }),
+    [products.length, categories.length, reviews.length, reviews]
+  );
+
+  // Fetch data on component mount
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const [productsData, categoriesData, reviewsData] = await Promise.all([
+        apiService.getProducts(),
+        apiService.getCategories(),
+        apiService.getReviews(),
+      ]);
+
+      setProducts(productsData);
+      setCategories(categoriesData);
+      setReviews(reviewsData);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error occurred");
+      console.error("Error fetching data:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const recentReviews = [
-    {
-      id: "#001",
-      customer: "علی محمدی",
-      product: "کاپوچینو",
-      rating: 5,
-      comment: "عالی بود! طعم فوق‌العاده‌ای داشت.",
-      status: "approved",
-    },
-    {
-      id: "#002",
-      customer: "فاطمه احمدی",
-      product: "لاته",
-      rating: 4,
-      comment: "خیلی خوب بود، پیشنهاد می‌کنم.",
-      status: "pending",
-    },
-    {
-      id: "#003",
-      customer: "محمد رضایی",
-      product: "اسپرسو",
-      rating: 5,
-      comment: "بهترین اسپرسویی که خوردم!",
-      status: "approved",
-    },
-    {
-      id: "#004",
-      customer: "زهرا کریمی",
-      product: "موهیتو",
-      rating: 3,
-      comment: "قابل قبول بود.",
-      status: "processing",
-    },
-  ];
+  // Handler functions for data updates
+  const handleProductUpdate = (updatedProducts: Product[]) => {
+    setProducts(updatedProducts);
+  };
 
-  const topProducts = [
-    { name: "کاپوچینو", sales: 45, revenue: "2,070,000" },
-    { name: "لاته", sales: 38, revenue: "1,748,000" },
-    { name: "اسپرسو", sales: 32, revenue: "1,472,000" },
-    { name: "موهیتو", sales: 28, revenue: "1,400,000" },
-  ];
+  const handleCategoryUpdate = (updatedCategories: Category[]) => {
+    setCategories(updatedCategories);
+  };
 
-  const renderOverview = () => (
-    <div className={styles.overviewSection}>
-      <h2 className={styles.sectionTitle}>نمای کلی</h2>
+  const handleReviewUpdate = (updatedReviews: Review[]) => {
+    setReviews(updatedReviews);
+  };
 
-      {/* Stats Cards */}
-      <div className={styles.statsGrid}>
-        <div className={styles.statCard}>
-          <div className={styles.statIcon}>☕</div>
-          <div className={styles.statContent}>
-            <h3>{stats.totalProducts}</h3>
-            <p>محصولات</p>
-          </div>
-        </div>
+  const handleError = (error: string) => {
+    setError(error);
+  };
 
-        <div className={styles.statCard}>
-          <div className={styles.statIcon}>📂</div>
-          <div className={styles.statContent}>
-            <h3>{stats.totalCategories}</h3>
-            <p>دسته‌بندی‌ها</p>
-          </div>
-        </div>
-
-        <div className={styles.statCard}>
-          <div className={styles.statIcon}>⭐</div>
-          <div className={styles.statContent}>
-            <h3>{stats.totalReviews}</h3>
-            <p>نظرات</p>
-          </div>
-        </div>
-
-        <div className={styles.statCard}>
-          <div className={styles.statIcon}>👥</div>
-          <div className={styles.statContent}>
-            <h3>{stats.activeCustomers}</h3>
-            <p>مشتریان فعال</p>
-          </div>
+  if (loading) {
+    return (
+      <div className={styles.dashboard}>
+        <div className={styles.loadingContainer}>
+          <div className={styles.loadingSpinner}>🔄</div>
+          <p>در حال بارگذاری...</p>
         </div>
       </div>
+    );
+  }
 
-      {/* Recent Reviews */}
-      <div className={styles.recentReviews}>
-        <h3>نظرات اخیر</h3>
-        <div className={styles.reviewsTable}>
-          <div className={styles.tableHeader}>
-            <span>شماره نظر</span>
-            <span>مشتری</span>
-            <span>محصول</span>
-            <span>امتیاز</span>
-            <span>وضعیت</span>
-          </div>
-          {recentReviews.map((review) => (
-            <div key={review.id} className={styles.tableRow}>
-              <span>{review.id}</span>
-              <span>{review.customer}</span>
-              <span>{review.product}</span>
-              <span>{review.rating} ⭐</span>
-              <span className={`${styles.status} ${styles[review.status]}`}>
-                {review.status === "approved" && "تایید شده"}
-                {review.status === "pending" && "در انتظار"}
-                {review.status === "processing" && "در حال بررسی"}
-              </span>
-            </div>
-          ))}
+  if (error) {
+    return (
+      <div className={styles.dashboard}>
+        <div className={styles.errorContainer}>
+          <div className={styles.errorIcon}>❌</div>
+          <h3>خطا در بارگذاری داده‌ها</h3>
+          <p>{error}</p>
+          <button onClick={fetchData} className={styles.retryButton}>
+            تلاش مجدد
+          </button>
         </div>
       </div>
-
-      {/* Top Products */}
-      <div className={styles.topProducts}>
-        <h3>محصولات پرفروش</h3>
-        <div className={styles.productsList}>
-          {topProducts.map((product, index) => (
-            <div key={product.name} className={styles.productItem}>
-              <div className={styles.productRank}>#{index + 1}</div>
-              <div className={styles.productInfo}>
-                <h4>{product.name}</h4>
-                <p>{product.sales} فروش</p>
-              </div>
-              <div className={styles.productRevenue}>
-                {product.revenue} تومان
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderProducts = () => (
-    <div className={styles.productsSection}>
-      <div className={styles.sectionHeader}>
-        <h2>مدیریت محصولات</h2>
-        <button className={styles.addButton}>+ افزودن محصول جدید</button>
-      </div>
-
-      <div className={styles.productsGrid}>
-        {[
-          { name: "کاپوچینو", price: "46,000", category: "قهوه", stock: 50 },
-          { name: "لاته", price: "46,000", category: "قهوه", stock: 45 },
-          { name: "اسپرسو", price: "46,000", category: "قهوه", stock: 60 },
-          { name: "موهیتو", price: "50,000", category: "نوشیدنی", stock: 30 },
-          { name: "لیموناد", price: "50,000", category: "نوشیدنی", stock: 25 },
-          { name: "کوکتل", price: "50,000", category: "نوشیدنی", stock: 20 },
-        ].map((product) => (
-          <div key={product.name} className={styles.productCard}>
-            <div className={styles.productImage}>
-              <div className={styles.imagePlaceholder}>☕</div>
-            </div>
-            <div className={styles.productDetails}>
-              <h3>{product.name}</h3>
-              <p className={styles.productCategory}>{product.category}</p>
-              <p className={styles.productPrice}>{product.price} تومان</p>
-              <p className={styles.productStock}>موجودی: {product.stock}</p>
-            </div>
-            <div className={styles.productActions}>
-              <button className={styles.editButton}>ویرایش</button>
-              <button className={styles.deleteButton}>حذف</button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const renderCategories = () => (
-    <div className={styles.categoriesSection}>
-      <div className={styles.sectionHeader}>
-        <h2>مدیریت دسته‌بندی‌ها</h2>
-        <button className={styles.addButton}>+ افزودن دسته‌بندی جدید</button>
-      </div>
-
-      <div className={styles.categoriesGrid}>
-        {[
-          { name: "قهوه", count: 12, description: "انواع قهوه‌های داغ" },
-          { name: "نوشیدنی", count: 8, description: "نوشیدنی‌های سرد" },
-          { name: "پاستری", count: 6, description: "شیرینی و کیک" },
-          { name: "کاپوچینو", count: 4, description: "انواع کاپوچینو" },
-          { name: "لاته", count: 3, description: "انواع لاته" },
-          { name: "اسپرسو", count: 5, description: "انواع اسپرسو" },
-        ].map((category) => (
-          <div key={category.name} className={styles.categoryCard}>
-            <div className={styles.categoryIcon}>📂</div>
-            <div className={styles.categoryDetails}>
-              <h3>{category.name}</h3>
-              <p className={styles.categoryDescription}>
-                {category.description}
-              </p>
-              <p className={styles.categoryCount}>{category.count} محصول</p>
-            </div>
-            <div className={styles.categoryActions}>
-              <button className={styles.editButton}>ویرایش</button>
-              <button className={styles.deleteButton}>حذف</button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const renderReviews = () => (
-    <div className={styles.reviewsSection}>
-      <h2>مدیریت نظرات</h2>
-      <div className={styles.reviewsTable}>
-        <div className={styles.tableHeader}>
-          <span>شماره نظر</span>
-          <span>تاریخ</span>
-          <span>مشتری</span>
-          <span>محصول</span>
-          <span>امتیاز</span>
-          <span>نظر</span>
-          <span>وضعیت</span>
-          <span>عملیات</span>
-        </div>
-        {recentReviews.map((review) => (
-          <div key={review.id} className={styles.tableRow}>
-            <span>{review.id}</span>
-            <span>۱۴۰۲/۱۰/۱۵</span>
-            <span>{review.customer}</span>
-            <span>{review.product}</span>
-            <span>{review.rating} ⭐</span>
-            <span className={styles.reviewComment}>{review.comment}</span>
-            <span className={`${styles.status} ${styles[review.status]}`}>
-              {review.status === "approved" && "تایید شده"}
-              {review.status === "pending" && "در انتظار"}
-              {review.status === "processing" && "در حال بررسی"}
-            </span>
-            <div className={styles.reviewActions}>
-              <button className={styles.viewButton}>مشاهده</button>
-              <button className={styles.approveButton}>تایید</button>
-              <button className={styles.rejectButton}>رد</button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  const renderSettings = () => (
-    <div className={styles.settingsSection}>
-      <h2>تنظیمات</h2>
-      <div className={styles.settingsGrid}>
-        <div className={styles.settingCard}>
-          <h3>تنظیمات عمومی</h3>
-          <div className={styles.settingItem}>
-            <label>نام کافه</label>
-            <input type="text" defaultValue="کافه لئون" />
-          </div>
-          <div className={styles.settingItem}>
-            <label>آدرس</label>
-            <input type="text" defaultValue="تهران، خیابان ولیعصر" />
-          </div>
-          <div className={styles.settingItem}>
-            <label>شماره تماس</label>
-            <input type="tel" defaultValue="۰۲۱-۱۲۳۴۵۶۷۸" />
-          </div>
-          <button className={styles.saveButton}>ذخیره تغییرات</button>
-        </div>
-
-        <div className={styles.settingCard}>
-          <h3>تنظیمات امنیتی</h3>
-          <div className={styles.settingItem}>
-            <label>رمز عبور فعلی</label>
-            <input type="password" />
-          </div>
-          <div className={styles.settingItem}>
-            <label>رمز عبور جدید</label>
-            <input type="password" />
-          </div>
-          <div className={styles.settingItem}>
-            <label>تکرار رمز عبور</label>
-            <input type="password" />
-          </div>
-          <button className={styles.saveButton}>تغییر رمز عبور</button>
-        </div>
-      </div>
-    </div>
-  );
+    );
+  }
 
   return (
     <div className={styles.dashboard}>
       {/* Sidebar */}
-      <div className={`${styles.sidebar} ${isSidebarOpen ? styles.open : ""}`}>
-        <div className={styles.sidebarHeader}>
-          <Image
-            src="/logo-leon.png"
-            alt="Cafe Logo"
-            width={50}
-            height={50}
-            className={styles.sidebarLogo}
-          />
-          <h2>پنل مدیریت</h2>
-        </div>
-
-        <nav className={styles.sidebarNav}>
-          <button
-            className={`${styles.navItem} ${
-              activeTab === "overview" ? styles.active : ""
-            }`}
-            onClick={() => setActiveTab("overview")}
-          >
-            📊 نمای کلی
-          </button>
-          <button
-            className={`${styles.navItem} ${
-              activeTab === "products" ? styles.active : ""
-            }`}
-            onClick={() => setActiveTab("products")}
-          >
-            ☕ محصولات
-          </button>
-          <button
-            className={`${styles.navItem} ${
-              activeTab === "categories" ? styles.active : ""
-            }`}
-            onClick={() => setActiveTab("categories")}
-          >
-            📂 دسته‌بندی‌ها
-          </button>
-          <button
-            className={`${styles.navItem} ${
-              activeTab === "reviews" ? styles.active : ""
-            }`}
-            onClick={() => setActiveTab("reviews")}
-          >
-            ⭐ نظرات
-          </button>
-          <button
-            className={`${styles.navItem} ${
-              activeTab === "settings" ? styles.active : ""
-            }`}
-            onClick={() => setActiveTab("settings")}
-          >
-            ⚙️ تنظیمات
-          </button>
-        </nav>
-
-        <div className={styles.sidebarFooter}>
-          <Link href="/" className={styles.backLink}>
-            🏠 بازگشت به سایت
-          </Link>
-          <button className={styles.logoutButton}>🚪 خروج</button>
-        </div>
-      </div>
+      <Sidebar
+        isOpen={isSidebarOpen}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
 
       {/* Main Content */}
       <div className={styles.mainContent}>
-        <header className={styles.header}>
-          <button
-            className={styles.menuToggle}
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          >
-            ☰
-          </button>
-          <div className={styles.headerTitle}>
-            {activeTab === "overview" && "نمای کلی"}
-            {activeTab === "products" && "مدیریت محصولات"}
-            {activeTab === "categories" && "مدیریت دسته‌بندی‌ها"}
-            {activeTab === "reviews" && "مدیریت نظرات"}
-            {activeTab === "settings" && "تنظیمات"}
-          </div>
-          <div className={styles.userInfo}>
-            <span>👤 ادمین</span>
-          </div>
-        </header>
+        <Header
+          isSidebarOpen={isSidebarOpen}
+          activeTab={activeTab}
+          onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+        />
 
         <main className={styles.content}>
-          {activeTab === "overview" && renderOverview()}
-          {activeTab === "products" && renderProducts()}
-          {activeTab === "categories" && renderCategories()}
-          {activeTab === "reviews" && renderReviews()}
-          {activeTab === "settings" && renderSettings()}
+          {activeTab === "overview" && (
+            <OverviewSection
+              products={products}
+              reviews={reviews}
+              stats={stats}
+            />
+          )}
+          {activeTab === "products" && (
+            <ProductsSection
+              products={products}
+              categories={categories}
+              onProductUpdate={handleProductUpdate}
+              onError={handleError}
+            />
+          )}
+          {activeTab === "categories" && (
+            <CategoriesSection
+              categories={categories}
+              products={products}
+              onCategoryUpdate={handleCategoryUpdate}
+              onError={handleError}
+            />
+          )}
+          {activeTab === "reviews" && (
+            <ReviewsSection
+              reviews={reviews}
+              onReviewUpdate={handleReviewUpdate}
+              onError={handleError}
+            />
+          )}
+          {activeTab === "settings" && <SettingsSection />}
         </main>
       </div>
     </div>

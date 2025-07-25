@@ -4,6 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./login.module.css";
 
+// API Base URL
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+
 export default function AdminLogin() {
   const [formData, setFormData] = useState({
     username: "",
@@ -26,19 +30,32 @@ export default function AdminLogin() {
     setError("");
 
     try {
-      // TODO: Implement actual login logic here
-      // For now, just simulate a login attempt
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-      // Simulate login validation
-      if (formData.username === "admin" && formData.password === "admin123") {
-        // Redirect to admin dashboard
-        window.location.href = "/admin/dashboard";
-      } else {
-        setError("نام کاربری یا رمز عبور اشتباه است");
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed");
       }
+
+      // Check if user is admin
+      if (!data.user.is_admin) {
+        throw new Error("Access denied. Admin privileges required.");
+      }
+
+      // Store the real JWT token
+      localStorage.setItem("adminToken", data.token);
+
+      // Redirect to admin dashboard
+      window.location.href = "/admin/dashboard";
     } catch (err) {
-      setError("خطا در ورود به سیستم");
+      setError(err instanceof Error ? err.message : "خطا در ورود به سیستم");
     } finally {
       setIsLoading(false);
     }
@@ -55,11 +72,8 @@ export default function AdminLogin() {
             height={80}
             className={styles.logo}
           />
-          
-           
+
           <p className={styles.subtitle}>پنل مدیریت کافه</p>
-          
-         
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>

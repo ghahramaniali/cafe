@@ -87,7 +87,7 @@ router.patch('/:id/password', adminAuth, [
     const passwordHash = await bcrypt.hash(new_password, salt);
 
     const result = await pool.query(
-      'UPDATE users SET password_hash = $1 WHERE id = $2 RETURNING id',
+      'UPDATE users SET password = $1 WHERE id = $2 RETURNING id',
       [passwordHash, id]
     );
 

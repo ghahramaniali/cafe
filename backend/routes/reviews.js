@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
   try {
     const { user_id, approved } = req.query;
     let query = `
-      SELECT r.*, u.username, u.first_name, u.last_name
+      SELECT r.*, u.name as username, u.name as first_name, u.name as last_name
       FROM reviews r 
       JOIN users u ON r.user_id = u.id 
       WHERE 1=1
@@ -45,7 +45,7 @@ router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const result = await pool.query(
-      `SELECT r.*, u.username, u.first_name, u.last_name
+      `SELECT r.*, u.name as username, u.name as first_name, u.name as last_name
        FROM reviews r 
        JOIN users u ON r.user_id = u.id 
        WHERE r.id = $1`,
