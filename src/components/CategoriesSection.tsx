@@ -2,11 +2,11 @@ import React from "react";
 import styles from "../app/page.module.css";
 
 const categories = [
-  { icon: "\u2615", name: "تجهیزات" },
-  { icon: "\uD83E\uDD64", name: "میکس های اسپرسو" },
-  { icon: "\uD83D\uDCE6", name: "بیرون بر" },
-  { icon: "\uD83E\uDED8", name: "انواع قهوه" },
-  { icon: "\uD83E\uDD50", name: "شیرینی" },
+  { icon: "\u2615", name: "اسپرسوبار" },
+  { icon: "\uD83E\uDD64", name: "شیک بار" },
+  { icon: "\uD83D\uDCE6", name: "شکلات بار" },
+  { icon: "\uD83E\uDED8", name: "بستنی" },
+  { icon: "\uD83E\uDED8", name: "کیک" },
 ];
 
 const CategoriesSection: React.FC = () => (
