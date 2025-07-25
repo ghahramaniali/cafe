@@ -84,6 +84,7 @@ export default function Home() {
 
             <a href="#">ارتباط با ما</a>
             <a href="#">درباره ما</a>
+            <a href="/admin/login">ورود ادمین</a>
           </div>
         </nav>
       </header>
@@ -121,7 +122,12 @@ export default function Home() {
       <section className={styles.instantCoffee}>
         <div className={styles.instantContent}>
           <div className={styles.instantImage}>
-          <Image src="/images/coffee-couple.png" alt="logo" width={200} height={70} />
+            <Image
+              src="/images/coffee-couple.png"
+              alt="logo"
+              width={200}
+              height={70}
+            />
           </div>
           <div className={styles.instantText}>
             <h2>انواع قهوه فوری</h2>
