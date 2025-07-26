@@ -10,7 +10,8 @@ interface CategoriesSectionProps {
 }
 
 // API Base URL
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 export default function CategoriesSection({
   categories,
@@ -25,6 +26,8 @@ export default function CategoriesSection({
     description: "",
     image_url: "",
   });
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   // API Service Functions
   const apiService = {
@@ -66,7 +69,69 @@ export default function CategoriesSection({
       });
       if (!response.ok) throw new Error("Failed to delete category");
     },
-    };
+
+    async createCategoryWithImage(
+      categoryData: Partial<Category>,
+      imageFile?: File
+    ): Promise<Category> {
+      const formData = new FormData();
+
+      // Add category data
+      Object.entries(categoryData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, value.toString());
+        }
+      });
+
+      // Add image file if provided
+      if (imageFile) {
+        formData.append("image", imageFile);
+      }
+
+      const response = await fetch(`${API_BASE_URL}/categories/with-image`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+        body: formData,
+      });
+      if (!response.ok) throw new Error("Failed to create category with image");
+      return response.json();
+    },
+
+    async updateCategoryWithImage(
+      id: string,
+      categoryData: Partial<Category>,
+      imageFile?: File
+    ): Promise<Category> {
+      const formData = new FormData();
+
+      // Add category data
+      Object.entries(categoryData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, value.toString());
+        }
+      });
+
+      // Add image file if provided
+      if (imageFile) {
+        formData.append("image", imageFile);
+      }
+
+      const response = await fetch(
+        `${API_BASE_URL}/categories/${id}/with-image`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          },
+          body: formData,
+        }
+      );
+      if (!response.ok) throw new Error("Failed to update category with image");
+      return response.json();
+    },
+  };
 
   // Category modal handlers
   const openAddCategoryModal = () => {
@@ -76,6 +141,8 @@ export default function CategoriesSection({
       description: "",
       image_url: "",
     });
+    setSelectedImageFile(null);
+    setImagePreview(null);
     setShowCategoryModal(true);
   };
 
@@ -86,6 +153,8 @@ export default function CategoriesSection({
       description: category.description || "",
       image_url: category.image_url || "",
     });
+    setSelectedImageFile(null);
+    setImagePreview(category.image_url || null);
     setShowCategoryModal(true);
   };
 
@@ -97,6 +166,8 @@ export default function CategoriesSection({
       description: "",
       image_url: "",
     });
+    setSelectedImageFile(null);
+    setImagePreview(null);
   };
 
   const handleInputChange = useCallback(
@@ -113,6 +184,20 @@ export default function CategoriesSection({
     },
     []
   );
+
+  const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImageFile(file);
+
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleCategorySubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -131,17 +216,39 @@ export default function CategoriesSection({
         };
 
         if (editingCategory) {
-          const updatedCategory = await apiService.updateCategory(
-            editingCategory.id,
-            categoryData
-          );
-          const updatedCategories = categories.map((c) => 
-            c.id === editingCategory.id ? updatedCategory : c
-          );
-          onCategoryUpdate(updatedCategories);
+          // For editing, use the image upload endpoint if an image is selected
+          if (selectedImageFile) {
+            const updatedCategory = await apiService.updateCategoryWithImage(
+              editingCategory.id,
+              categoryData,
+              selectedImageFile
+            );
+            const updatedCategories = categories.map((c) =>
+              c.id === editingCategory.id ? updatedCategory : c
+            );
+            onCategoryUpdate(updatedCategories);
+          } else {
+            const updatedCategory = await apiService.updateCategory(
+              editingCategory.id,
+              categoryData
+            );
+            const updatedCategories = categories.map((c) =>
+              c.id === editingCategory.id ? updatedCategory : c
+            );
+            onCategoryUpdate(updatedCategories);
+          }
         } else {
-          const newCategory = await apiService.createCategory(categoryData);
-          onCategoryUpdate([...categories, newCategory]);
+          // For new categories, use the image upload endpoint if an image is selected
+          if (selectedImageFile) {
+            const newCategory = await apiService.createCategoryWithImage(
+              categoryData,
+              selectedImageFile
+            );
+            onCategoryUpdate([...categories, newCategory]);
+          } else {
+            const newCategory = await apiService.createCategory(categoryData);
+            onCategoryUpdate([...categories, newCategory]);
+          }
         }
 
         closeCategoryModal();
@@ -149,7 +256,14 @@ export default function CategoriesSection({
         onError(err instanceof Error ? err.message : "Unknown error occurred");
       }
     },
-    [categoryForm, editingCategory, categories, onCategoryUpdate, onError]
+    [
+      categoryForm,
+      editingCategory,
+      selectedImageFile,
+      categories,
+      onCategoryUpdate,
+      onError,
+    ]
   );
 
   // Category handlers
@@ -175,7 +289,22 @@ export default function CategoriesSection({
       <div className={styles.categoriesGrid}>
         {categories.map((category) => (
           <div key={category.id} className={styles.categoryCard}>
-            <div className={styles.categoryIcon}>📂</div>
+            <div className={styles.categoryIcon}>
+              {category.image_url ? (
+                <img
+                  src={category.image_url}
+                  alt={category.name}
+                  style={{
+                    width: "60px",
+                    height: "60px",
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                  }}
+                />
+              ) : (
+                <span>📂</span>
+              )}
+            </div>
             <div className={styles.categoryDetails}>
               <h3>{category.name}</h3>
               <p className={styles.categoryDescription}>
@@ -187,7 +316,7 @@ export default function CategoriesSection({
               </p>
             </div>
             <div className={styles.categoryActions}>
-              <button 
+              <button
                 className={styles.editButton}
                 onClick={() => openEditCategoryModal(category)}
               >
@@ -206,10 +335,15 @@ export default function CategoriesSection({
 
       {/* Category Modal */}
       {showCategoryModal && (
-        <div className={styles.modalOverlay} onClick={(e) => e.stopPropagation()}>
+        <div
+          className={styles.modalOverlay}
+          onClick={(e) => e.stopPropagation()}
+        >
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
-              <h3>{editingCategory ? "ویرایش دسته‌بندی" : "افزودن دسته‌بندی جدید"}</h3>
+              <h3>
+                {editingCategory ? "ویرایش دسته‌بندی" : "افزودن دسته‌بندی جدید"}
+              </h3>
               <button
                 type="button"
                 onClick={(e) => {
@@ -222,10 +356,7 @@ export default function CategoriesSection({
                 ✕
               </button>
             </div>
-            <form
-              onSubmit={handleCategorySubmit}
-              className={styles.modalForm}
-            >
+            <form onSubmit={handleCategorySubmit} className={styles.modalForm}>
               <div className={styles.formGroup}>
                 <label>نام دسته‌بندی</label>
                 <input
@@ -250,14 +381,39 @@ export default function CategoriesSection({
               </div>
 
               <div className={styles.formGroup}>
-                <label>آدرس تصویر</label>
+                <label>تصویر دسته‌بندی</label>
                 <input
-                  type="text"
-                  name="image_url"
-                  value={categoryForm.image_url}
-                  onChange={handleInputChange}
-                  placeholder="آدرس تصویر دسته‌بندی"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageFileChange}
+                  placeholder="انتخاب تصویر دسته‌بندی"
                 />
+                {imagePreview && (
+                  <div style={{ marginTop: "10px" }}>
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      style={{
+                        maxWidth: "200px",
+                        maxHeight: "200px",
+                        objectFit: "cover",
+                        border: "1px solid #ddd",
+                        borderRadius: "4px",
+                      }}
+                    />
+                  </div>
+                )}
+                {editingCategory && !selectedImageFile && (
+                  <div
+                    style={{
+                      marginTop: "10px",
+                      fontSize: "12px",
+                      color: "#666",
+                    }}
+                  >
+                    تصویر فعلی: {categoryForm.image_url || "بدون تصویر"}
+                  </div>
+                )}
               </div>
 
               <div className={styles.modalActions}>

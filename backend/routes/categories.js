@@ -1,9 +1,52 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const pool = require('../config/database');
 const { adminAuth } = require('../middleware/auth');
 
 const router = express.Router();
+
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// Configure multer for image uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadsDir);
+  },
+  filename: function (req, file, cb) {
+    // Generate unique filename with timestamp
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const ext = path.extname(file.originalname);
+    cb(null, file.fieldname + '-' + uniqueSuffix + ext);
+  }
+});
+
+// File filter to only allow images
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = /jpeg|jpg|png|gif|webp/;
+  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = allowedTypes.test(file.mimetype);
+
+  if (mimetype && extname) {
+    return cb(null, true);
+  } else {
+    cb(new Error('Only image files are allowed!'), false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  },
+  fileFilter: fileFilter
+});
 
 // Get all categories
 router.get('/', async (req, res) => {
@@ -29,7 +72,7 @@ router.get('/:id', async (req, res) => {
     res.json(result.rows[0]);
   } catch (error) {
     console.error('Get category error:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -126,6 +169,98 @@ router.get('/:id/products', async (req, res) => {
     console.error('Get category products error:', error);
     res.status(500).json({ message: 'Server error' });
   }
+});
+
+// Create category with image (Admin only)
+router.post('/with-image', adminAuth, upload.single('image'), [
+  body('name').notEmpty().withMessage('Name is required'),
+  body('description').optional()
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { name, description } = req.body;
+    let image_url = null;
+
+    if (req.file) {
+      image_url = `/uploads/${req.file.filename}`;
+    }
+    
+    const result = await pool.query(
+      'INSERT INTO categories (name, description, image_url, created_at, updated_at) VALUES ($1, $2, $3, NOW(), NOW()) RETURNING *',
+      [name, description, image_url]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Create category with image error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Update category with image (Admin only)
+router.put('/:id/with-image', adminAuth, upload.single('image'), [
+  body('name').notEmpty().withMessage('Name is required'),
+  body('description').optional()
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { id } = req.params;
+    const { name, description } = req.body;
+
+    // Get current category to check if it has an image
+    const currentCategory = await pool.query('SELECT image_url FROM categories WHERE id = $1', [id]);
+    if (currentCategory.rows.length === 0) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+
+    let image_url = currentCategory.rows[0].image_url;
+
+    // If a new image is uploaded, update the image_url
+    if (req.file) {
+      // Delete old image if it exists
+      if (currentCategory.rows[0].image_url) {
+        const oldImagePath = path.join(__dirname, '..', currentCategory.rows[0].image_url);
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      }
+      image_url = `/uploads/${req.file.filename}`;
+    }
+
+    const result = await pool.query(
+      'UPDATE categories SET name = $1, description = $2, image_url = $3, updated_at = NOW() WHERE id = $4 RETURNING *',
+      [name, description, image_url, id]
+    );
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Update category with image error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Error handling middleware for multer
+router.use((error, req, res, next) => {
+  if (error instanceof multer.MulterError) {
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ message: 'File too large. Maximum size is 5MB' });
+    }
+    return res.status(400).json({ message: error.message });
+  }
+  
+  if (error.message === 'Only image files are allowed!') {
+    return res.status(400).json({ message: error.message });
+  }
+  
+  next(error);
 });
 
 module.exports = router; 
