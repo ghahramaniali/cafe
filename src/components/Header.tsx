@@ -20,12 +20,12 @@ const Header: React.FC<HeaderProps> = ({ variant = "transparent" }) => {
             <Image src="/logo-leon.png" alt="logo" width={70} height={70} />
           </div>
 
+         
+
           {/* Desktop Navigation */}
           <div className={styles.desktopNav}>
             {" "}
-            <a href="/" >
-              صفحه اصلی
-            </a>
+            <a href="/">صفحه اصلی</a>
             <a href="/menu">منوی فروشگاه</a>
             <a href="/contact">ارتباط با ما</a>
             <a href="/admin/login">ورود ادمین</a>

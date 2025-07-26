@@ -73,7 +73,7 @@ a:hover {
 .bestsellers-swiper {
   padding: 20px 0 40px 0;
 }
-.bestsellers-swiper .swiper-slide{
+.bestsellers-swiper .swiper-slide {
   padding: 20px;
 }
 
@@ -116,5 +116,4 @@ a:hover {
   height: auto;
   display: flex;
   justify-content: center;
-  
 }

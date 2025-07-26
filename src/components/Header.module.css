@@ -14,7 +14,12 @@
 }
 
 .header.solid {
-  background: rgba(84, 55, 43, 0.95);
+  background: linear-gradient(
+    135deg,
+    rgba(84, 55, 43, 0.95) 0%,
+    rgba(139, 69, 19, 0.9) 50%,
+    rgba(160, 82, 45, 0.95) 100%
+  );
   backdrop-filter: blur(10px);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
@@ -31,6 +36,26 @@
 .logoContainer {
   display: flex;
   align-items: center;
+}
+
+/* Mobile Title */
+.mobileTitle {
+  display: none;
+  position: absolute;
+  top: 50%;
+  right: 100px;
+  transform: translateY(-50%);
+  z-index: 50;
+  pointer-events: none;
+}
+
+.mobileTitle h1 {
+  color: #dabb9e;
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  margin: 0;
+  text-align: center;
 }
 
 /* Desktop Navigation */
@@ -59,6 +84,8 @@
   justify-content: space-around;
   width: 30px;
   height: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -81,12 +108,16 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .nav{
-        justify-content: space-between;
-        flex-direction: row-reverse;
-    }
+  .nav {
+    justify-content: space-between;
+    flex-direction: row-reverse;
+  }
   .desktopNav {
     display: none;
+  }
+
+  .mobileTitle {
+    display: block;
   }
 
   .hamburgerButton {
@@ -99,12 +130,18 @@
     padding: 0.8rem 1rem;
   }
 
+  .mobileTitle h1 {
+    font-size: 1.3rem;
+  }
+
   .hamburgerButton {
-    width: 25px;
-    height: 25px;
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
   }
 
   .hamburgerButton span {
     height: 2px;
   }
-} 
+}

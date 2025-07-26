@@ -526,27 +526,10 @@
   text-align: center;
 }
 
-/* Enhanced Responsive Design */
-@media (max-width: 1200px) {
-  .mainContent {
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-  }
-
-  .contactSection {
-    grid-column: 1 / -1;
-    flex-direction: row;
-    gap: 3rem;
-  }
-
-  .newsletterSection {
-    grid-column: 1 / -1;
-  }
-}
 
 @media (max-width: 1024px) {
   .featuredContent {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
   }
 
@@ -574,7 +557,7 @@
 
   .logo {
     justify-content: center;
-    font-size: 1.5rem;
+    font-size: 1.5rem; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
   }
 
   .tagline {
