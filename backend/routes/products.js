@@ -139,8 +139,8 @@ router.post('/', adminAuth, [
     }
     
     const result = await pool.query(
-      `INSERT INTO products (name, category_id, price, description, image_url, is_available, is_favorite) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7) 
+      `INSERT INTO products (name, category_id, price, description, image_url, is_available, is_favorite, created_at, updated_at) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW()) 
        RETURNING *`,
       [name, category_id, price, description, image_url, is_available, is_favorite]
     );
@@ -189,8 +189,8 @@ router.post('/with-image', adminAuth, upload.single('image'), [
     }
     
     const result = await pool.query(
-      `INSERT INTO products (name, category_id, price, description, image_url, is_available, is_favorite) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7) 
+      `INSERT INTO products (name, category_id, price, description, image_url, is_available, is_favorite, created_at, updated_at) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW()) 
        RETURNING *`,
       [name, category_id, price, description, imageUrl, is_available, is_favorite]
     );
@@ -245,7 +245,7 @@ router.put('/:id', adminAuth, [
     const result = await pool.query(
       `UPDATE products 
        SET name = $1, category_id = $2, price = $3, description = $4, 
-           image_url = $5, is_available = $6, is_favorite = $7 
+           image_url = $5, is_available = $6, is_favorite = $7, updated_at = NOW() 
        WHERE id = $8 
        RETURNING *`,
       [name, category_id, price, description, image_url, is_available, is_favorite, id]
@@ -262,16 +262,83 @@ router.put('/:id', adminAuth, [
   }
 });
 
+// Update product with image upload (Admin only)
+router.put('/:id/with-image', adminAuth, upload.single('image'), [
+  body('name').notEmpty().withMessage('Name is required'),
+  body('category_id').isUUID().withMessage('Valid category ID is required'),
+  body('price').isFloat({ min: 0 }).withMessage('Valid price is required'),
+  body('description').optional(),
+  body('is_available').optional().isBoolean(),
+  body('is_favorite').optional().isBoolean()
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { id } = req.params;
+    const { 
+      name, 
+      category_id, 
+      price, 
+      description, 
+      is_available, 
+      is_favorite 
+    } = req.body;
+
+    // Check if category exists
+    const categoryResult = await pool.query('SELECT id FROM categories WHERE id = $1', [category_id]);
+    if (categoryResult.rows.length === 0) {
+      return res.status(400).json({ message: 'Category not found' });
+    }
+
+    // Check if product exists
+    const existingProduct = await pool.query('SELECT image_url FROM products WHERE id = $1', [id]);
+    if (existingProduct.rows.length === 0) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Handle image upload
+    let imageUrl = existingProduct.rows[0].image_url; // Keep existing image if no new one uploaded
+    if (req.file) {
+      // Delete old image file if it exists
+      if (existingProduct.rows[0].image_url) {
+        const oldImagePath = path.join(__dirname, '..', existingProduct.rows[0].image_url);
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      }
+      imageUrl = `/uploads/${req.file.filename}`;
+    }
+    
+    const result = await pool.query(
+      `UPDATE products 
+       SET name = $1, category_id = $2, price = $3, description = $4, 
+           image_url = $5, is_available = $6, is_favorite = $7, updated_at = NOW() 
+       WHERE id = $8 
+       RETURNING *`,
+      [name, category_id, price, description, imageUrl, is_available, is_favorite, id]
+    );
+
+    res.json({
+      ...result.rows[0],
+      uploadedImage: req.file ? {
+        filename: req.file.filename,
+        originalName: req.file.originalname,
+        size: req.file.size
+      } : null
+    });
+  } catch (error) {
+    console.error('Update product with image error:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Delete product (Admin only)
 router.delete('/:id', adminAuth, async (req, res) => {
   try {
     const { id } = req.params;
-
-    // Check if product has reviews
-    const reviewsResult = await pool.query('SELECT COUNT(*) FROM reviews WHERE product_id = $1', [id]);
-    if (parseInt(reviewsResult.rows[0].count) > 0) {
-      return res.status(400).json({ message: 'Cannot delete product with existing reviews' });
-    }
 
     const result = await pool.query('DELETE FROM products WHERE id = $1 RETURNING *', [id]);
     

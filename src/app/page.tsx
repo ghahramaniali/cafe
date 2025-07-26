@@ -7,7 +7,6 @@ import CategoriesSection from "../components/CategoriesSection";
 import BestsellersSection from "../components/BestsellersSection";
 import PopularSection from "../components/PopularSection";
 import Footer from "../components/Footer";
-import TestimonialsSection from "../components/TestimonialsSection";
 
 export default function Home() {
   const menuItems = [
@@ -161,7 +160,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <TestimonialsSection />
+      {/* <TestimonialsSection /> */}
 
       {/* Footer */}
       <Footer />

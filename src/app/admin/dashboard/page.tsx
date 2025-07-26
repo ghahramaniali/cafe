@@ -1,11 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import styles from "./dashboard.module.css";
-import { Product, Category, Review, Stats } from "../../../types/admin";
+import { Product, Category, Stats } from "../../../types/admin";
 import OverviewSection from "../../../components/admin/OverviewSection";
 import ProductsSection from "../../../components/admin/ProductsSection";
 import CategoriesSection from "../../../components/admin/CategoriesSection";
-import ReviewsSection from "../../../components/admin/ReviewsSection";
 import SettingsSection from "../../../components/admin/SettingsSection";
 import Sidebar from "../../../components/admin/Sidebar";
 import Header from "../../../components/admin/Header";
@@ -136,43 +135,6 @@ const apiService = {
     });
     if (!response.ok) throw new Error("Failed to delete category");
   },
-
-  // Reviews
-  async getReviews(): Promise<Review[]> {
-    const response = await fetch(`${API_BASE_URL}/reviews`);
-    if (!response.ok) throw new Error("Failed to fetch reviews");
-    return response.json();
-  },
-
-  async approveReview(id: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/reviews/${id}/approve`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-      },
-    });
-    if (!response.ok) throw new Error("Failed to approve review");
-  },
-
-  async rejectReview(id: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/reviews/${id}/reject`, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-      },
-    });
-    if (!response.ok) throw new Error("Failed to reject review");
-  },
-
-  async deleteReview(id: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/reviews/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-      },
-    });
-    if (!response.ok) throw new Error("Failed to delete review");
-  },
 };
 
 export default function AdminDashboard() {
@@ -184,20 +146,14 @@ export default function AdminDashboard() {
   // Data states
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [reviews, setReviews] = useState<Review[]>([]);
 
   // Stats calculation - memoized to prevent unnecessary recalculations
   const stats: Stats = React.useMemo(
     () => ({
       totalProducts: products.length,
       totalCategories: categories.length,
-      totalReviews: reviews.length,
-      activeCustomers: reviews.reduce((acc: string[], review) => {
-        if (!acc.includes(review.user_id)) acc.push(review.user_id);
-        return acc;
-      }, []).length,
     }),
-    [products.length, categories.length, reviews.length, reviews]
+    [products.length, categories.length]
   );
 
   // Fetch data on component mount
@@ -210,15 +166,13 @@ export default function AdminDashboard() {
       setLoading(true);
       setError(null);
 
-      const [productsData, categoriesData, reviewsData] = await Promise.all([
+      const [productsData, categoriesData] = await Promise.all([
         apiService.getProducts(),
         apiService.getCategories(),
-        apiService.getReviews(),
       ]);
 
       setProducts(productsData);
       setCategories(categoriesData);
-      setReviews(reviewsData);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error occurred");
       console.error("Error fetching data:", err);
@@ -234,10 +188,6 @@ export default function AdminDashboard() {
 
   const handleCategoryUpdate = (updatedCategories: Category[]) => {
     setCategories(updatedCategories);
-  };
-
-  const handleReviewUpdate = (updatedReviews: Review[]) => {
-    setReviews(updatedReviews);
   };
 
   const handleError = (error: string) => {
@@ -289,11 +239,7 @@ export default function AdminDashboard() {
 
         <main className={styles.content}>
           {activeTab === "overview" && (
-            <OverviewSection
-              products={products}
-              reviews={reviews}
-              stats={stats}
-            />
+            <OverviewSection products={products} stats={stats} />
           )}
           {activeTab === "products" && (
             <ProductsSection
@@ -308,13 +254,6 @@ export default function AdminDashboard() {
               categories={categories}
               products={products}
               onCategoryUpdate={handleCategoryUpdate}
-              onError={handleError}
-            />
-          )}
-          {activeTab === "reviews" && (
-            <ReviewsSection
-              reviews={reviews}
-              onReviewUpdate={handleReviewUpdate}
               onError={handleError}
             />
           )}

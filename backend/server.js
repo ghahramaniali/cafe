@@ -7,7 +7,6 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const categoriesRoutes = require('./routes/categories');
 const productsRoutes = require('./routes/products');
-const reviewsRoutes = require('./routes/reviews');
 const usersRoutes = require('./routes/users');
 const uploadRoutes = require('./routes/upload');
 
@@ -44,7 +43,6 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoriesRoutes);
 app.use('/api/products', productsRoutes);
-app.use('/api/reviews', reviewsRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/upload', uploadRoutes);
 

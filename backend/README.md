@@ -7,7 +7,6 @@ Express.js backend with PostgreSQL for a cafe management system.
 - **Authentication**: JWT-based authentication with user registration and login
 - **Categories Management**: CRUD operations for product categories
 - **Products Management**: Full product management with search and filtering
-- **Reviews System**: User reviews with rating and approval system
 - **User Management**: Admin user management capabilities
 - **Bilingual Support**: Persian and English content support
 
@@ -18,7 +17,6 @@ Express.js backend with PostgreSQL for a cafe management system.
 1. **categories** - Product categories (دسته بندی ها)
 2. **users** - User accounts (کاربران)
 3. **products** - Products/Menu items (محصولات)
-4. **reviews** - User reviews and ratings (نظرات)
 
 ## Setup Instructions
 
@@ -110,17 +108,7 @@ Express.js backend with PostgreSQL for a cafe management system.
 - `GET /featured/list` - Get featured products
 - `GET /search/:query` - Search products
 
-### Reviews (`/api/reviews`)
 
-- `GET /` - Get all reviews (with filters)
-- `GET /:id` - Get review by ID
-- `POST /` - Create new review (authenticated)
-- `PUT /:id` - Update review (owner only)
-- `DELETE /:id` - Delete review (owner/admin)
-- `PATCH /:id/approve` - Approve/reject review (admin only)
-- `GET /product/:product_id` - Get reviews for product
-- `GET /user/me` - Get user's reviews
-- `GET /product/:product_id/average` - Get product rating stats
 
 ### Users (`/api/users`)
 
@@ -131,7 +119,6 @@ Express.js backend with PostgreSQL for a cafe management system.
 - `PATCH /:id/toggle-status` - Toggle user status (admin only)
 - `DELETE /:id` - Delete user (admin only)
 - `GET /stats/overview` - Get user statistics (admin only)
-- `GET /:id/reviews` - Get user's reviews (admin only)
 
 ## Authentication
 
@@ -178,20 +165,7 @@ Content-Type: application/json
 }
 ```
 
-### Create Review
 
-```bash
-POST /api/reviews
-Authorization: Bearer <user_token>
-Content-Type: application/json
-
-{
-  "product_id": "uuid-here",
-  "rating": 5,
-  "comment": "Excellent coffee!",
-  "comment_fa": "قهوه عالی!"
-}
-```
 
 ## Error Handling
 

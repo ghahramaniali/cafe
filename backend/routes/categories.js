@@ -47,7 +47,7 @@ router.post('/', adminAuth, [
     const { name, description, image_url } = req.body;
     
     const result = await pool.query(
-      'INSERT INTO categories (name, description, image_url) VALUES ($1, $2, $3) RETURNING *',
+      'INSERT INTO categories (name, description, image_url, created_at, updated_at) VALUES ($1, $2, $3, NOW(), NOW()) RETURNING *',
       [name, description, image_url]
     );
 
@@ -73,7 +73,7 @@ router.put('/:id', adminAuth, [
     const { name, description, image_url } = req.body;
 
     const result = await pool.query(
-      'UPDATE categories SET name = $1, description = $2, image_url = $3 WHERE id = $4 RETURNING *',
+      'UPDATE categories SET name = $1, description = $2, image_url = $3, updated_at = NOW() WHERE id = $4 RETURNING *',
       [name, description, image_url, id]
     );
 

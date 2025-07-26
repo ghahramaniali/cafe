@@ -20,8 +20,7 @@ export default function Header({
         return "مدیریت محصولات";
       case "categories":
         return "مدیریت دسته‌بندی‌ها";
-      case "reviews":
-        return "مدیریت نظرات";
+
       case "settings":
         return "تنظیمات";
       default:

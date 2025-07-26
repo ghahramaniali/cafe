@@ -54,14 +54,6 @@ export default function Sidebar({
         </button>
         <button
           className={`${styles.navItem} ${
-            activeTab === "reviews" ? styles.active : ""
-          }`}
-          onClick={() => onTabChange("reviews")}
-        >
-          ⭐ نظرات
-        </button>
-        <button
-          className={`${styles.navItem} ${
             activeTab === "settings" ? styles.active : ""
           }`}
           onClick={() => onTabChange("settings")}

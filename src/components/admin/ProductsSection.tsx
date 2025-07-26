@@ -11,7 +11,8 @@ interface ProductsSectionProps {
 }
 
 // API Base URL
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 export default function ProductsSection({
   products,
@@ -28,6 +29,7 @@ export default function ProductsSection({
     description: "",
     image_url: "",
     is_available: true,
+    is_favorite: false,
   });
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -92,6 +94,41 @@ export default function ProductsSection({
       return response.json();
     },
 
+    async updateProductWithImage(
+      id: string,
+      productData: Partial<Product>,
+      imageFile?: File
+    ): Promise<Product> {
+      const formData = new FormData();
+
+      // Add product data
+      Object.entries(productData).forEach(([key, value]) => {
+        console.warn(key, value);
+
+        if (value !== undefined && value !== null) {
+          formData.append(key, value.toString());
+        }
+      });
+
+      // Add image file if provided
+      if (imageFile) {
+        formData.append("image", imageFile);
+      }
+
+      const response = await fetch(
+        `${API_BASE_URL}/products/${id}/with-image`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          },
+          body: formData,
+        }
+      );
+      if (!response.ok) throw new Error("Failed to update product with image");
+      return response.json();
+    },
+
     async deleteProduct(id: string): Promise<void> {
       const response = await fetch(`${API_BASE_URL}/products/${id}`, {
         method: "DELETE",
@@ -113,6 +150,7 @@ export default function ProductsSection({
       description: "",
       image_url: "",
       is_available: true,
+      is_favorite: false,
     });
     setSelectedImageFile(null);
     setImagePreview(null);
@@ -128,6 +166,7 @@ export default function ProductsSection({
       description: product.description || "",
       image_url: product.image_url || "",
       is_available: product.is_available,
+      is_favorite: product.is_favorite,
     });
     setSelectedImageFile(null);
     setImagePreview(product.image_url || null);
@@ -144,6 +183,7 @@ export default function ProductsSection({
       description: "",
       image_url: "",
       is_available: true,
+      is_favorite: false,
     });
     setSelectedImageFile(null);
     setImagePreview(null);
@@ -209,15 +249,27 @@ export default function ProductsSection({
         };
 
         if (editingProduct) {
-          // For editing, we'll use the regular update endpoint
-          const updatedProduct = await apiService.updateProduct(
-            editingProduct.id,
-            productData
-          );
-          const updatedProducts = products.map((p) => 
-            p.id === editingProduct.id ? updatedProduct : p
-          );
-          onProductUpdate(updatedProducts);
+          // For editing, use the image upload endpoint if an image is selected
+          if (selectedImageFile) {
+            const updatedProduct = await apiService.updateProductWithImage(
+              editingProduct.id,
+              productData,
+              selectedImageFile
+            );
+            const updatedProducts = products.map((p) =>
+              p.id === editingProduct.id ? updatedProduct : p
+            );
+            onProductUpdate(updatedProducts);
+          } else {
+            const updatedProduct = await apiService.updateProduct(
+              editingProduct.id,
+              productData
+            );
+            const updatedProducts = products.map((p) =>
+              p.id === editingProduct.id ? updatedProduct : p
+            );
+            onProductUpdate(updatedProducts);
+          }
         } else {
           // For new products, use the image upload endpoint if an image is selected
           if (selectedImageFile) {
@@ -237,7 +289,14 @@ export default function ProductsSection({
         onError(err instanceof Error ? err.message : "Unknown error occurred");
       }
     },
-    [productForm, editingProduct, selectedImageFile, products, onProductUpdate, onError]
+    [
+      productForm,
+      editingProduct,
+      selectedImageFile,
+      products,
+      onProductUpdate,
+      onError,
+    ]
   );
 
   // Product handlers
@@ -285,6 +344,9 @@ export default function ProductsSection({
               <p className={styles.productStock}>
                 موجودی: {product.is_available ? "موجود" : "ناموجود"}
               </p>
+              {product.is_favorite && (
+                <p className={styles.productFavorite}>⭐ محبوب</p>
+              )}
             </div>
             <div className={styles.productActions}>
               <button
@@ -306,7 +368,10 @@ export default function ProductsSection({
 
       {/* Product Modal */}
       {showProductModal && (
-        <div className={styles.modalOverlay} onClick={(e) => e.stopPropagation()}>
+        <div
+          className={styles.modalOverlay}
+          onClick={(e) => e.stopPropagation()}
+        >
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <h3>{editingProduct ? "ویرایش محصول" : "افزودن محصول جدید"}</h3>
@@ -417,7 +482,11 @@ export default function ProductsSection({
                 )}
                 {editingProduct && !selectedImageFile && (
                   <div
-                    style={{ marginTop: "10px", fontSize: "12px", color: "#666" }}
+                    style={{
+                      marginTop: "10px",
+                      fontSize: "12px",
+                      color: "#666",
+                    }}
                   >
                     تصویر فعلی: {productForm.image_url || "بدون تصویر"}
                   </div>
@@ -433,6 +502,18 @@ export default function ProductsSection({
                     onChange={handleInputChange}
                   />
                   محصول موجود است
+                </label>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.checkboxLabel}>
+                  <input
+                    type="checkbox"
+                    name="is_favorite"
+                    checked={productForm.is_favorite}
+                    onChange={handleInputChange}
+                  />
+                  محصول محبوب است
                 </label>
               </div>
 

@@ -131,12 +131,6 @@ router.delete('/:id', adminAuth, async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Check if user has reviews
-    const reviewsResult = await pool.query('SELECT COUNT(*) FROM reviews WHERE user_id = $1', [id]);
-    if (parseInt(reviewsResult.rows[0].count) > 0) {
-      return res.status(400).json({ message: 'Cannot delete user with existing reviews' });
-    }
-
     const result = await pool.query('DELETE FROM users WHERE id = $1 RETURNING id', [id]);
     
     if (result.rows.length === 0) {
@@ -163,26 +157,6 @@ router.get('/stats/overview', adminAuth, async (req, res) => {
     res.json(stats.rows[0]);
   } catch (error) {
     console.error('Get user stats error:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Get user's reviews (Admin only)
-router.get('/:id/reviews', adminAuth, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await pool.query(
-      `SELECT r.*, p.name as product_name, p.name_fa as product_name_fa
-       FROM reviews r 
-       JOIN products p ON r.product_id = p.id 
-       WHERE r.user_id = $1 
-       ORDER BY r.created_at DESC`,
-      [id]
-    );
-    
-    res.json(result.rows);
-  } catch (error) {
-    console.error('Get user reviews error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
