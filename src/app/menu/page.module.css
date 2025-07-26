@@ -1,0 +1,41 @@
+/* Menu Page Styles */
+.container {
+  font-family: "IRANSansX Medium", "Tahoma", "Arial", sans-serif;
+  direction: rtl;
+  background-color: #f8e4be;
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+
+.pageTitle {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 0 2rem;
+  margin-top: 6rem;
+}
+
+.pageTitle h1 {
+  color: #25181a;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 0 0 1rem 0;
+}
+
+.pageTitle p {
+  color: #54372b;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .pageTitle h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .pageTitle h1 {
+    font-size: 1.5rem;
+  }
+}

@@ -1,4 +1,4 @@
-/* Modern Minimal Footer Styles */
+/* Modern Cafe Footer Styles */
 .footer {
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   color: #ffffff;
@@ -33,7 +33,7 @@
 .mainContent {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 4rem;
+  gap: 3rem;
   padding: 4rem 0 3rem;
 }
 
@@ -75,6 +75,26 @@
   line-height: 1.6;
   font-weight: 400;
   margin: 0;
+}
+
+.brandFeatures {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #b0b0b0;
+}
+
+.featureIcon {
+  font-size: 1rem;
+  opacity: 0.8;
 }
 
 /* Links Section */
@@ -145,11 +165,11 @@
 .contactSection {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 2rem;
 }
 
 .contactInfo h4,
-.newsletter h4 {
+.hoursInfo h4 {
   color: #ffffff;
   font-size: 1.1rem;
   font-weight: 600;
@@ -158,7 +178,7 @@
 }
 
 .contactInfo h4::after,
-.newsletter h4::after {
+.hoursInfo h4::after {
   content: "";
   position: absolute;
   bottom: -0.5rem;
@@ -169,17 +189,86 @@
   border-radius: 1px;
 }
 
-.contactInfo p {
-  color: #b0b0b0;
-  font-size: 0.9rem;
-  margin: 0 0 0.75rem 0;
-  line-height: 1.5;
+.contactItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  align-items: center;
 }
 
-.newsletter p {
+.contactIcon {
+  font-size: 1.1rem;
+  margin-top: 0.1rem;
+  opacity: 0.8;
+}
+
+.contactItem p {
+  color: #b0b0b0;
+  font-size: 0.9rem;
+
+  margin: 0;
+  line-height: 1.4;
+}
+
+.hoursGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.hourItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.hourItem:last-child {
+  border-bottom: none;
+}
+
+.hourItem span {
+  color: #b0b0b0;
+  font-size: 0.9rem;
+}
+
+.hourItem span:last-child {
+  color: #d4af37;
+  font-weight: 500;
+}
+
+/* Newsletter Section */
+.newsletterSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.newsletterSection h4 {
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  position: relative;
+}
+
+.newsletterSection h4::after {
+  content: "";
+  position: absolute;
+  bottom: -0.5rem;
+  right: 0;
+  width: 2rem;
+  height: 2px;
+  background: linear-gradient(90deg, #d4af37, transparent);
+  border-radius: 1px;
+}
+
+.newsletterSection p {
   color: #a0a0a0;
   font-size: 0.85rem;
-  margin: 0 0 1.5rem 0;
+  margin: 0;
   line-height: 1.5;
 }
 
@@ -217,7 +306,7 @@
   background: linear-gradient(135deg, #d4af37, #f4d03f);
   border: none;
   border-radius: 8px;
-  padding: 0.875rem 1.5rem;
+  padding: 0.875rem 1.25rem;
   color: #1a1a1a;
   font-weight: 600;
   font-size: 0.9rem;
@@ -226,6 +315,9 @@
   font-family: inherit;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .subscribeBtn::before {
@@ -257,6 +349,80 @@
   transform: translateY(0);
 }
 
+.btnIcon {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+}
+
+.subscribeBtn:hover .btnIcon {
+  transform: translateX(2px);
+}
+
+.newsletterFeatures {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.newsletterFeatures span {
+  color: #a0a0a0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+/* Featured Section */
+.featuredSection {
+  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 2rem 0;
+  margin: 2rem 0;
+}
+
+.featuredContent {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  align-items: center;
+}
+
+.featuredItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.featuredItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(212, 175, 55, 0.2);
+  transform: translateY(-2px);
+}
+
+.featuredIcon {
+  font-size: 2rem;
+  opacity: 0.9;
+}
+
+.featuredItem h5 {
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+}
+
+.featuredItem p {
+  color: #a0a0a0;
+  font-size: 0.85rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
 /* Footer Bottom */
 .footerBottom {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -267,8 +433,17 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-direction: row;
   flex-wrap: wrap;
   gap: 1rem;
+}
+
+.copyrightSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  align-items: center;
 }
 
 .copyright {
@@ -277,9 +452,48 @@
   margin: 0;
 }
 
+.creatorSection {
+  width: 100%;
+  margin-left: calc(-50vw + 50%);
+  background: rgba(0, 0, 0, 0.1);
+  padding: 1rem 0;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.creator {
+  color: #a0a0a0;
+  font-size: 0.8rem;
+  margin: 0;
+  text-align: center;
+}
+
+.legalLinks {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.legalLinks a {
+  color: #a0a0a0;
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: color 0.3s ease;
+}
+
+.legalLinks a:hover {
+  color: #d4af37;
+}
+
+.socialSection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
 .socialLinks {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .socialLink {
@@ -305,8 +519,15 @@
   box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
+.socialText {
+  color: #808080;
+  font-size: 0.8rem;
+  margin: 0;
+  text-align: center;
+}
+
+/* Enhanced Responsive Design */
+@media (max-width: 1200px) {
   .mainContent {
     grid-template-columns: 1fr 1fr;
     gap: 3rem;
@@ -316,6 +537,22 @@
     grid-column: 1 / -1;
     flex-direction: row;
     gap: 3rem;
+  }
+
+  .newsletterSection {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 1024px) {
+  .featuredContent {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .featuredItem {
+    justify-content: center;
+    text-align: center;
   }
 }
 
@@ -330,19 +567,91 @@
     padding: 3rem 0 2rem;
   }
 
+  .brandSection {
+    text-align: center;
+    align-items: center;
+  }
+
+  .logo {
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+
+  .tagline {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    text-align: center;
+    max-width: 100%;
+  }
+
   .linksSection {
     gap: 2rem;
+  }
+
+  .linkGroup {
+    text-align: center;
+  }
+
+  .linkGroup h4::after {
+    right: 50%;
+    transform: translateX(50%);
   }
 
   .contactSection {
     flex-direction: column;
     gap: 2rem;
+    text-align: center;
+  }
+
+  .contactInfo h4::after,
+  .hoursInfo h4::after {
+    right: 50%;
+    transform: translateX(50%);
+  }
+
+  .contactItem {
+    margin-top: 2rem;
+    justify-content: center;
+    flex-direction: row;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .contactIcon {
+    margin-top: 0;
+  }
+
+  .hourItem {
+    flex-direction: column;
+    gap: 0.25rem;
+    text-align: center;
+    padding: 0.75rem 0;
+  }
+
+  .hourItem span:last-child {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .copyrightSection {
+    align-items: center;
+    order: 2;
+  }
+
+  .socialSection {
+    align-items: center;
+    order: 1;
+    margin-bottom: 1rem;
   }
 
   .bottomContent {
     flex-direction: column;
-    text-align: center;
     gap: 1.5rem;
+  }
+
+  .legalLinks {
+    justify-content: center;
+    order: 3;
   }
 }
 
@@ -353,6 +662,16 @@
 
   .mainContent {
     padding: 2rem 0 1.5rem;
+    gap: 2rem;
+  }
+
+  .logo {
+    font-size: 1.4rem;
+  }
+
+  .tagline {
+    font-size: 0.85rem;
+    line-height: 1.8;
   }
 
   .linksSection {
@@ -360,8 +679,48 @@
     gap: 1.5rem;
   }
 
+  .linkGroup h4 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .linkGroup li a {
+    font-size: 0.85rem;
+    padding: 0.5rem 0;
+  }
+
+  .contactInfo h4,
+  .hoursInfo h4 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .contactItem p {
+    font-size: 0.85rem;
+  }
+
+  .hourItem span {
+    font-size: 0.85rem;
+  }
+
+  .hourItem span:last-child {
+    font-size: 0.9rem;
+  }
+
   .newsletterForm {
     flex-direction: column;
+    gap: 1rem;
+  }
+
+  .emailInput {
+    padding: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .subscribeBtn {
+    padding: 1rem;
+    font-size: 0.9rem;
+    justify-content: center;
   }
 
   .socialLinks {
@@ -369,7 +728,100 @@
   }
 
   .socialLink {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .socialLink svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .featuredItem {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.75rem;
+    padding: 1.5rem 1rem;
+  }
+
+  .featuredIcon {
+    font-size: 1.75rem;
+  }
+
+  .featuredItem h5 {
+    font-size: 0.95rem;
+  }
+
+  .featuredItem p {
+    font-size: 0.8rem;
+  }
+
+  .legalLinks {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .legalLinks a {
+    font-size: 0.75rem;
+    padding: 0.25rem 0;
+  }
+
+  .copyright {
+    font-size: 0.8rem;
+    text-align: center;
+  }
+
+  .creator {
+    font-size: 0.75rem;
+  }
+
+  .socialText {
+    font-size: 0.75rem;
+  }
+
+  .footerBottom {
+    padding: 1.5rem 0;
+  }
+
+  .bottomContent {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .container {
+    padding: 0 0.75rem;
+  }
+
+  .mainContent {
+    padding: 1.5rem 0 1rem;
+    gap: 1.5rem;
+  }
+
+  .logo {
+    font-size: 1.3rem;
+  }
+
+  .tagline {
+    font-size: 0.8rem;
+  }
+
+  .socialLink {
+    width: 40px;
+    height: 40px;
+  }
+
+  .socialLink svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .featuredItem {
+    padding: 1rem 0.75rem;
+  }
+
+  .footerBottom {
+    padding: 1rem 0;
   }
 }

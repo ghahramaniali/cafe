@@ -7,6 +7,7 @@ import CategoriesSection from "../components/CategoriesSection";
 import BestsellersSection from "../components/BestsellersSection";
 import { productsApi, Product } from "../utils/api";
 import Footer from "../components/Footer";
+import Header from "../components/Header";
 
 export default function Home() {
   const [menuItems, setMenuItems] = useState<Product[]>([]);
@@ -39,18 +40,7 @@ export default function Home() {
   return (
     <div className={styles.container}>
       {/* Header */}
-      <header className={styles.header}>
-        <nav className={styles.nav}>
-          <div className={styles.navLinks}>
-            <Image src="/logo-leon.png" alt="logo" width={70} height={70} />
-            <a href="#">منوی فروشگاه</a>
-
-            <a href="#">ارتباط با ما</a>
-            <a href="#">درباره ما</a>
-            <a href="/admin/login">ورود ادمین</a>
-          </div>
-        </nav>
-      </header>
+      <Header variant="transparent" />
 
       {/* Hero Section */}
       <section className={styles.hero}>
@@ -93,12 +83,13 @@ export default function Home() {
             />
           </div>
           <div className={styles.instantText}>
-            <h2>انواع قهوه فوری</h2>
+            <h2>قهوه‌های تخصصی ما</h2>
             <p>
-              انواع قهوه فوری کلاسیک، کافی میکس، کافی میت، کاپوچینو، لاته،
-              موکاچینو، هات چاکلت و نسکافه گلد
+              از قهوه‌های اسپرسو کلاسیک گرفته تا کاپوچینو، لاته، موکاچینو، هات
+              چاکلت و نوشیدنی‌های سرد - همه با بهترین دانه‌های قهوه و تکنیک‌های
+              حرفه‌ای آماده می‌شوند
             </p>
-            <button className={styles.orderButton}>همین حالا خرید کن</button>
+            {/*     <button className={styles.orderButton}>مشاهده منو</button> */}
           </div>
         </div>
       </section>
@@ -108,7 +99,7 @@ export default function Home() {
 
       {/* Full Menu */}
       <section className={styles.bestsellers}>
-        <h2>منوی کامل</h2>
+        <h2>آیتم های کافه لئون</h2>
         {loading ? (
           <div style={{ textAlign: "center", padding: "2rem" }}>
             <p>در حال بارگذاری...</p>

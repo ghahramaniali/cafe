@@ -1,211 +1,219 @@
+"use client";
 import Link from "next/link";
+import Image from "next/image";
+import { useState, useEffect } from "react";
+import { productsApi, Product } from "../../utils/api";
+import ProductItem from "../../components/ProductItem";
+import Footer from "../../components/Footer";
+import Header from "../../components/Header";
+import styles from "./page.module.css";
 
-const categories = [
-  {
-    name: "تجهیزات",
-    slug: "equipment",
-    icon: "☕",
-    description: "Equipment",
-  },
-  {
-    name: "میکس های اسپرسو",
-    slug: "espresso-mixes",
-    icon: "🫖",
-    description: "Espresso Mixes",
-  },
-  {
-    name: "بیرون بر",
-    slug: "takeaway",
-    icon: "🥤",
-    description: "Takeaway",
-  },
-  {
-    name: "انواع قهوه",
-    slug: "coffee-types",
-    icon: "🫘",
-    description: "Types of Coffee",
-  },
-  {
-    name: "شیرینی",
-    slug: "pastry",
-    icon: "🥐",
-    description: "Pastry",
-  },
-];
+export default function ShopMenuPage() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
-const items = [
-  { name: "Classic Espresso", slug: "classic-espresso" },
-  { name: "Vanilla Latte", slug: "vanilla-latte" },
-  { name: "Iced Cold Brew", slug: "iced-cold-brew" },
-  { name: "Chocolate Croissant", slug: "chocolate-croissant" },
-];
+  const categories = [
+    { id: "all", name: "همه محصولات", icon: "☕" },
+    { id: "coffee", name: "انواع قهوه", icon: "🫘" },
+    { id: "espresso", name: "اسپرسو", icon: "☕" },
+    { id: "latte", name: "لاته", icon: "🥛" },
+    { id: "cappuccino", name: "کاپوچینو", icon: "☕" },
+    { id: "cold", name: "نوشیدنی سرد", icon: "🧊" },
+    { id: "pastry", name: "شیرینی", icon: "🥐" },
+  ];
 
-export default function MenuPage() {
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const allProducts = await productsApi.getAvailable();
+        setProducts(allProducts);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const filteredProducts =
+    selectedCategory === "all"
+      ? products
+      : products.filter((product) =>
+          product.category_name
+            ?.toLowerCase()
+            .includes(selectedCategory.toLowerCase())
+        );
+
   return (
-    <div
-      style={{
-        fontFamily: "IRANSansX Medium, Tahoma, Arial, sans-serif",
-        padding: "2rem",
-        backgroundColor: "#F8E4BE",
-        minHeight: "100vh",
-      }}
-    >
-      <div
-        style={{
-          textAlign: "right",
-          marginBottom: "2rem",
-        }}
-      >
-        <h1
-          style={{
-            color: "#25181A",
-            fontSize: "1.5rem",
-            fontWeight: "bold",
-            margin: 0,
-          }}
-        >
-          دسته بندی محصولات
-        </h1>
+    <div className={styles.container}>
+      {/* Header */}
+      <Header variant="transparent" />
+
+      {/* Page Title */}
+      <div className={styles.pageTitle}>
+        <h1>منوی فروشگاه کافه لئون</h1>
+        <p>بهترین قهوه‌ها و نوشیدنی‌های گرم و سرد را تجربه کنید</p>
       </div>
 
+      {/* Category Filter */}
       <div
         style={{
           display: "flex",
-          gap: "1rem",
           justifyContent: "center",
+          gap: "1rem",
           flexWrap: "wrap",
           marginBottom: "3rem",
+          padding: "0 2rem",
         }}
       >
         {categories.map((category) => (
-          <Link
-            key={category.slug}
-            href={`/category/${category.slug}`}
+          <button
+            key={category.id}
+            onClick={() => setSelectedCategory(category.id)}
             style={{
-              textDecoration: "none",
-              color: "inherit",
+              backgroundColor:
+                selectedCategory === category.id ? "#54372B" : "#DABB9E",
+              color: selectedCategory === category.id ? "#F8E4BE" : "#25181A",
+              border: "none",
+              borderRadius: "25px",
+              padding: "0.75rem 1.5rem",
+              cursor: "pointer",
+              transition: "all 0.3s ease",
+              fontSize: "0.9rem",
+              fontWeight: "500",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+            }}
+            onMouseEnter={(e) => {
+              if (selectedCategory !== category.id) {
+                e.currentTarget.style.backgroundColor = "#C4A484";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (selectedCategory !== category.id) {
+                e.currentTarget.style.backgroundColor = "#DABB9E";
+              }
+            }}
+          >
+            <span style={{ fontSize: "1.2rem" }}>{category.icon}</span>
+            {category.name}
+          </button>
+        ))}
+      </div>
+
+      {/* Products Grid */}
+      <div style={{ padding: "0 2rem" }}>
+        {loading ? (
+          <div
+            style={{
+              textAlign: "center",
+              padding: "4rem 2rem",
+              color: "#54372B",
             }}
           >
             <div
               style={{
-                backgroundColor: "#54372B",
-                borderRadius: "12px",
-                padding: "1.5rem",
-                width: "120px",
-                height: "120px",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                transition: "transform 0.2s ease",
-                boxShadow: "0 4px 8px rgba(37, 24, 26, 0.3)",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "scale(1.05)";
-                e.currentTarget.style.backgroundColor = "#775142";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "scale(1)";
-                e.currentTarget.style.backgroundColor = "#54372B";
+                fontSize: "2rem",
+                marginBottom: "1rem",
               }}
             >
-              <div
-                style={{
-                  fontSize: "2rem",
-                  marginBottom: "0.5rem",
-                  color: "#F8E4BE",
-                }}
-              >
-                {category.icon}
-              </div>
-              <div
-                style={{
-                  color: "#F8E4BE",
-                  fontSize: "0.9rem",
-                  textAlign: "center",
-                  lineHeight: "1.2",
-                }}
-              >
-                {category.name}
-              </div>
+              ☕
             </div>
-          </Link>
-        ))}
+            <p style={{ fontSize: "1.1rem" }}>در حال بارگذاری محصولات...</p>
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <div
+            style={{
+              textAlign: "center",
+              padding: "4rem 2rem",
+              color: "#54372B",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "2rem",
+                marginBottom: "1rem",
+              }}
+            >
+              😔
+            </div>
+            <p style={{ fontSize: "1.1rem" }}>
+              محصولی در این دسته‌بندی یافت نشد
+            </p>
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              gap: "2rem",
+              maxWidth: "1200px",
+              margin: "0 auto",
+            }}
+          >
+            {filteredProducts.map((product) => (
+              <ProductItem
+                key={product.id}
+                image={product.image_url || "/menu-items/coffee.png"}
+                name={product.name}
+                desc={product.description || ""}
+                price={`${product.price.toLocaleString()} تومان`}
+                useNextImage={true}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
+      {/* Back to Home */}
       <div
         style={{
-          textAlign: "right",
-          marginBottom: "2rem",
+          textAlign: "center",
+          marginTop: "4rem",
+          padding: "0 2rem",
         }}
       >
-        <h2
+        <Link
+          href="/"
           style={{
-            color: "#25181A",
-            fontSize: "1.5rem",
-            fontWeight: "bold",
-            margin: 0,
+            textDecoration: "none",
+            color: "inherit",
           }}
         >
-          منو
-        </h2>
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "1rem",
-          alignItems: "center",
-        }}
-      >
-        {items.map((item) => (
-          <Link
-            key={item.slug}
-            href={`/item/${item.slug}`}
+          <button
             style={{
-              textDecoration: "none",
-              color: "inherit",
-              width: "100%",
-              maxWidth: "400px",
+              backgroundColor: "#54372B",
+              color: "#F8E4BE",
+              border: "none",
+              borderRadius: "25px",
+              padding: "1rem 2rem",
+              cursor: "pointer",
+              transition: "all 0.3s ease",
+              fontSize: "1rem",
+              fontWeight: "500",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#775142";
+              e.currentTarget.style.transform = "scale(1.05)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#54372B";
+              e.currentTarget.style.transform = "scale(1)";
             }}
           >
-            <div
-              style={{
-                backgroundColor: "#54372B",
-                borderRadius: "12px",
-                padding: "1.5rem",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                transition: "all 0.2s ease",
-                boxShadow: "0 4px 8px rgba(37, 24, 26, 0.3)",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "scale(1.02)";
-                e.currentTarget.style.backgroundColor = "#7D5647";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "scale(1)";
-                e.currentTarget.style.backgroundColor = "#54372B";
-              }}
-            >
-              <div
-                style={{
-                  color: "#F8E4BE",
-                  fontSize: "1.1rem",
-                  fontWeight: "500",
-                  textAlign: "center",
-                }}
-              >
-                {item.name}
-              </div>
-            </div>
-          </Link>
-        ))}
+            بازگشت به صفحه اصلی
+          </button>
+        </Link>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

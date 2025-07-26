@@ -1,0 +1,110 @@
+/* Header Styles */
+.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem 2rem;
+  z-index: 100;
+  transition: all 0.3s ease;
+}
+
+.header.transparent {
+  background: transparent;
+}
+
+.header.solid {
+  background: rgba(84, 55, 43, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.nav {
+  display: flex;
+  justify-content: right;
+  gap: 1rem;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+}
+
+/* Desktop Navigation */
+.desktopNav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.desktopNav a {
+  color: #dabb9e;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+  font-size: 0.95rem;
+}
+
+.desktopNav a:hover {
+  color: #d4af37;
+}
+
+/* Hamburger Menu Button */
+.hamburgerButton {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 10;
+}
+
+.hamburgerButton span {
+  width: 100%;
+  height: 3px;
+  background: #dabb9e;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.hamburgerButton:hover span {
+  background: #d4af37;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav{
+        justify-content: space-between;
+        flex-direction: row-reverse;
+    }
+  .desktopNav {
+    display: none;
+  }
+
+  .hamburgerButton {
+    display: flex;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 0.8rem 1rem;
+  }
+
+  .hamburgerButton {
+    width: 25px;
+    height: 25px;
+  }
+
+  .hamburgerButton span {
+    height: 2px;
+  }
+} 
