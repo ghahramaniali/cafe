@@ -1,6 +1,8 @@
+"use client";
 import React from "react";
-import Image from "next/image";
+
 import styles from "./ProductItem.module.css";
+import { getImageUrl } from "../utils/imageUtils";
 
 interface ProductItemProps {
   image: string;
@@ -19,25 +21,41 @@ const ProductItem: React.FC<ProductItemProps> = ({
   onOrderClick,
   useNextImage = false,
 }) => {
+  const processedImage = getImageUrl(image);
+  console.warn(processedImage);
+
+  // Check if the image URL is valid (not localhost or empty)
+  const isValidImage =
+    processedImage &&
+    !processedImage.includes("localhost") &&
+    !processedImage.includes("127.0.0.1") &&
+    processedImage.trim() !== "";
+
   return (
     <div className={styles.productCard}>
-      {useNextImage ? (
-        <Image
+      {isValidImage ? (
+        <img
           className={styles.productImage}
-          src={image}
+          src={processedImage}
           alt={name}
           width={200}
           height={200}
         />
       ) : (
-        <img className={styles.productImage} src={image} alt={name} />
+        <img
+          className={styles.productImage}
+          src={"/logo-leon.png"}
+          alt={name}
+        />
       )}
       <h3 className={styles.productName}>{name}</h3>
       <p className={styles.productDesc}>{desc}</p>
-     
-     { <button className={styles.orderButton} onClick={onOrderClick}>
-     {price}
-      </button>}
+
+      {
+        <button className={styles.orderButton} onClick={onOrderClick}>
+          {price}
+        </button>
+      }
     </div>
   );
 };

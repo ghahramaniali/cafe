@@ -2,6 +2,7 @@ import React, { useState, useCallback } from "react";
 import Image from "next/image";
 import styles from "../../app/admin/dashboard/dashboard.module.css";
 import { Product, Category } from "../../types/admin";
+import { getImageUrl } from "../../utils/imageUtils";
 
 interface ProductsSectionProps {
   products: Product[];
@@ -325,7 +326,7 @@ export default function ProductsSection({
             <div className={styles.productImage}>
               {product.image_url ? (
                 <Image
-                  src={product.image_url}
+                  src={getImageUrl(product.image_url) || ""}
                   alt={product.name}
                   width={80}
                   height={80}

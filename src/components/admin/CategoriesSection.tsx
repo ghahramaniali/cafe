@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import styles from "../../app/admin/dashboard/dashboard.module.css";
 import { Product, Category } from "../../types/admin";
+import { getImageUrl } from "../../utils/imageUtils";
 
 interface CategoriesSectionProps {
   categories: Category[];
@@ -292,7 +293,7 @@ export default function CategoriesSection({
             <div className={styles.categoryIcon}>
               {category.image_url ? (
                 <img
-                  src={category.image_url}
+                  src={getImageUrl(category.image_url) || ""}
                   alt={category.name}
                   style={{
                     width: "60px",

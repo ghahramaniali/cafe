@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cafe Application
+
+A modern cafe management application with a Next.js frontend and Express.js backend.
+
+## Project Structure
+
+- `src/` - Next.js frontend application
+- `backend/` - Express.js backend API
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js (v16 or higher)
+- PostgreSQL database
+- npm or yarn
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Backend Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Navigate to the backend directory:
 
-This project uses IRANSansX Medium font for Persian/Arabic text support and optimal typography.
+   ```bash
+   cd backend
+   ```
 
-## Learn More
+2. Install dependencies:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Set up environment variables:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   - Copy `env.example` to `.env`
+   - Update the database configuration and other settings
 
-## Deploy on Vercel
+4. Set up the database:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npm run setup
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+5. Start the backend server:
+   ```bash
+   npm run dev
+   ```
+
+The backend will run on `http://localhost:5000`
+
+### Frontend Setup
+
+1. In a new terminal, navigate to the project root:
+
+   ```bash
+   cd cafe
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Create a `.env.local` file in the root directory with:
+
+   ```
+   NEXT_PUBLIC_API_URL=http://localhost:5000/api
+   ```
+
+4. Start the frontend development server:
+   ```bash
+   npm run dev
+   ```
+
+The frontend will run on `http://localhost:3000`
+
+## API Integration
+
+The frontend now fetches categories from the backend API instead of using hardcoded data. The `CategoriesSection` component:
+
+- Fetches categories from `/api/categories` endpoint
+- Displays loading states while fetching data
+- Shows error messages if the API call fails
+- Supports category images from the backend
+- Falls back to a coffee emoji if no image is provided
+
+## Available Scripts
+
+### Backend
+
+- `npm run dev` - Start development server with nodemon
+- `npm start` - Start production server
+- `npm run setup` - Set up database tables
+
+### Frontend
+
+- `npm run dev` - Start development server with turbopack
+- `npm run build` - Build for production
+- `npm start` - Start production server
+- `npm run lint` - Run ESLint
+
+## API Endpoints
+
+- `GET /api/categories` - Get all categories
+- `GET /api/categories/:id` - Get category by ID
+- `POST /api/categories` - Create new category (Admin only)
+- `PUT /api/categories/:id` - Update category (Admin only)
+- `DELETE /api/categories/:id` - Delete category (Admin only)

@@ -377,6 +377,11 @@
 .categoryIcon {
   font-size: 3rem;
   margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* width: 100%; */
+  /* height: 100%; */
 }
 
 .categoryCard span {

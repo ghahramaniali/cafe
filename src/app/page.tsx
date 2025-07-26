@@ -1,76 +1,40 @@
 "use client";
 import styles from "./page.module.css";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import ProductItem from "../components/ProductItem";
 import CategoriesSection from "../components/CategoriesSection";
 import BestsellersSection from "../components/BestsellersSection";
-import PopularSection from "../components/PopularSection";
+import { productsApi, Product } from "../utils/api";
 import Footer from "../components/Footer";
 
 export default function Home() {
-  const menuItems = [
-    {
-      name: "موهیتو",
-      desc: "نوشیدنی خنک و خوشمزه",
-      price: "50000 تومان",
-      image: "/menu-items/mojito.png",
-    },
-    {
-      name: "لیموناد",
-      desc: "نوشیدنی لیمویی تازه",
-      price: "50000 تومان",
-      image: "/menu-items/limonade.png",
-    },
-    {
-      name: "کوکتل",
-      desc: "نوشیدنی ترکیبی میوه",
-      price: "50000 تومان",
-      image: "/menu-items/coctail.png",
-    },
-    {
-      name: "آب پرتقال",
-      desc: "آب پرتقال طبیعی",
-      price: "50000 تومان",
-      image: "/menu-items/orange-juice.png",
-    },
-    {
-      name: "آبمیوه ها",
-      desc: "انواع آبمیوه تازه",
-      price: "50000 تومان",
-      image: "/menu-items/juices.png",
-    },
-    {
-      name: "اسپرسو",
-      desc: "قهوه 50% | شیر 50%",
-      price: "46000 تومان",
-      image: "/menu-items/espresso.png",
-    },
-    {
-      name: "قهوه",
-      desc: "قهوه تازه دم",
-      price: "50000 تومان",
-      image: "/menu-items/coffee.png",
-    },
-    {
-      name: "لاته",
-      desc: "قهوه 50% | شیر 50%",
-      price: "46000 تومان",
-      image: "/menu-items/latte.png",
-    },
-    {
-      name: "کاپوچینو",
-      desc: "قهوه 50% | شیر 50%",
-      price: "46000 تومان",
-      image: "/menu-items/cappuccino.png",
-    },
-    {
-      name: "آیس کاپوچینو",
-      desc: "کاپوچینو سرد و خوشمزه",
-      price: "55000 تومان",
-      image: "/menu-items/ice-cappuccino.png",
-    },
-  ];
+  const [menuItems, setMenuItems] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        // Fetch all available products from the backend
+        const products = await productsApi.getAvailable();
+
+        // Randomly select 8 items
+        const shuffled = products.sort(() => 0.5 - Math.random());
+        const selectedProducts = shuffled.slice(0, 8);
+
+        setMenuItems(selectedProducts);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        // Fallback to empty array if API fails
+        setMenuItems([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -93,12 +57,12 @@ export default function Home() {
         <div className={styles.heroContent}>
           <div className={styles.heroText}>
             <h1 className={`${styles.heroText} ${styles.gradientText}`}>
-              خرید آنلاین انواع قهوه
+              کافه لئون
             </h1>
             <p style={{ color: "#DABB9E" }}>
-              فروشگاه اینترنتی قهوه، خرید انواع پودر و دان قهوه با قیمت مناسب
+              تجربه‌ای متفاوت با بهترین قهوه‌ها و نوشیدنی‌های گرم و سرد
             </p>
-            <button className={styles.ctaButton}>خرید و مشاوره</button>
+            <button className={styles.ctaButton}>رفتن به منوی فروشگاه</button>
           </div>
           <div className={styles.heroImage}>
             <Image
@@ -140,23 +104,29 @@ export default function Home() {
       </section>
 
       {/* Most Popular */}
-      <PopularSection />
+      {/* <PopularSection /> */}
 
       {/* Full Menu */}
       <section className={styles.bestsellers}>
         <h2>منوی کامل</h2>
-        <div className={styles.productGrid}>
-          {menuItems.map((item, index) => (
-            <ProductItem
-              key={index}
-              image={item.image}
-              name={item.name}
-              desc={item.desc}
-              price={item.price}
-              useNextImage={true}
-            />
-          ))}
-        </div>
+        {loading ? (
+          <div style={{ textAlign: "center", padding: "2rem" }}>
+            <p>در حال بارگذاری...</p>
+          </div>
+        ) : (
+          <div className={styles.productGrid}>
+            {menuItems.map((item) => (
+              <ProductItem
+                key={item.id}
+                image={item.image_url || "/menu-items/coffee.png"}
+                name={item.name}
+                desc={item.description || ""}
+                price={`${item.price.toLocaleString()} تومان`}
+                useNextImage={true}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Testimonials */}
