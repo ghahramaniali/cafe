@@ -14,7 +14,7 @@ export default function SettingsSection() {
           </div>
           <div className={styles.settingItem}>
             <label>آدرس</label>
-            <input type="text" defaultValue="تهران، خیابان ولیعصر" />
+            <input type="text" defaultValue="خیابان امام،جنب شیرینی سرای معینی،کافه لئون" />
           </div>
           <div className={styles.settingItem}>
             <label>شماره تماس</label>

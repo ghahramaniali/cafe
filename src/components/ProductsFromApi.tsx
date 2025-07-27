@@ -106,7 +106,7 @@ const ProductsFromApi: React.FC = () => {
             image={getImageUrl(product.image_url) || "menu-items/coffee.png"} // fallback image
             name={product.name}
             desc={product.description || "بدون توضیحات"}
-            price={`${product.price.toLocaleString()} تومان`}
+            price={`${product.price.toLocaleString()} `}
             useNextImage={true}
           />
         ))}

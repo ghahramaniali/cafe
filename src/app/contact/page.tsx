@@ -219,9 +219,7 @@ export default function ContactPage() {
                       fontSize: isMobile ? "0.9rem" : "1rem",
                       color: "#e5e7eb",
                     }}
-                  >
-                    تهران، خیابان ولیعصر
-                  </p>
+                    >خیابان امام،جنب شیرینی سرای معینی،کافه لئون</p>
                   <p
                     style={{
                       margin: 0,

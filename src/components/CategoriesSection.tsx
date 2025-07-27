@@ -47,16 +47,20 @@ const CategoriesSection: React.FC = () => {
           pagination={false}
           loop={true}
           breakpoints={{
-            640: {
+           300: {
               slidesPerView: 2,
               spaceBetween: 20,
             },
-            768: {
+            640: {
               slidesPerView: 3,
               spaceBetween: 20,
             },
-            1280: {
+            768: {
               slidesPerView: 4,
+              spaceBetween: 20,
+            },
+            1280: {
+              slidesPerView:5,
               spaceBetween: 20,
             },
           }}

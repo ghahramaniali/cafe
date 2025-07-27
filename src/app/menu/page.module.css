@@ -35,18 +35,139 @@
 /* Category Swiper Styles */
 .categorySwiperContainer {
   padding: 0 1rem 2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   position: relative;
+  border-bottom: 2px solid rgba(84, 55, 43, 0.2);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .categorySwiper {
-  padding: 1rem 0;
+  padding: 2rem 0;
   overflow: visible;
+  min-height: 120px;
+  position: relative;
 }
 
 .categorySlide {
   width: auto !important;
   height: auto;
+  display: flex;
+  justify-content: center;
+}
+
+/* New Category Card Styles */
+.categoryCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid transparent;
+  border-radius: 20px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 200px;
+  height: 200px;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.categoryCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    var(--category-color, #54372b),
+    transparent
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 18px;
+}
+
+.categoryCard:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 1);
+}
+
+.categoryCard:hover::before {
+  opacity: 0.1;
+}
+
+.categoryCard.activeCategory {
+  background: var(--category-color, #54372b);
+  color: #f8e4be;
+  border-color: var(--category-color, #54372b);
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 20px 50px rgba(84, 55, 43, 0.3);
+}
+
+.categoryCard.activeCategory::before {
+  opacity: 0;
+}
+
+.categoryCard.activeCategory .categoryName,
+.categoryCard.activeCategory .categoryDescription {
+  color: #f8e4be;
+}
+
+.categoryIcon {
+  font-size: 2.5rem;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background: linear-gradient(135deg, #54372b, #8b4513);
+}
+
+.categoryName {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+  position: relative;
+  z-index: 1;
+  color: #54372b;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.categoryDescription {
+  font-size: 0.9rem;
+  text-align: center;
+  line-height: 1.3;
+  position: relative;
+  z-index: 1;
+  color: #54372b;
+  opacity: 0.8;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  max-height: 2.6em;
 }
 
 .categoryButton {
@@ -106,7 +227,7 @@
   opacity: 0;
 }
 
-.categoryIcon {
+.categoryButton .categoryIcon {
   font-size: 1.8rem;
   line-height: 1;
   position: relative;
@@ -114,7 +235,7 @@
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
-.categoryName {
+.categoryButton .categoryName {
   font-size: 0.9rem;
   font-weight: 600;
   text-align: center;
@@ -184,12 +305,14 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 2px solid rgba(255, 255, 255, 0.2);
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .categorySwiper :global(.swiper-button-next:hover),
 .categorySwiper :global(.swiper-button-prev:hover) {
   background: rgba(255, 255, 255, 1);
-  transform: scale(1.1);
+  transform: translateY(-50%) scale(1.1);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
 }
 
@@ -206,6 +329,8 @@
 
 .categorySwiper :global(.swiper-pagination) {
   bottom: -15px;
+  position: relative;
+  text-align: center;
 }
 
 .categorySwiper :global(.swiper-pagination-bullet) {
@@ -214,6 +339,7 @@
   width: 8px;
   height: 8px;
   transition: all 0.3s ease;
+  margin: 0 4px;
 }
 
 .categorySwiper :global(.swiper-pagination-bullet-active) {
@@ -261,7 +387,7 @@
 
 .productsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
@@ -296,6 +422,12 @@
 }
 
 /* Responsive Design */
+@media (max-width: 500px) {
+  .categoryCard {
+    padding: 1rem;
+  }
+}
+
 @media (max-width: 768px) {
   .pageTitle h1 {
     font-size: 2rem;
@@ -305,21 +437,47 @@
     font-size: 1rem;
   }
 
+  .categorySwiperContainer {
+    padding: 0 0.5rem 2rem;
+  }
+
+  .categoryCard {
+    width: 160px;
+    height: 160px;
+    padding: 1.2rem;
+  }
+
+  .categoryIcon {
+    font-size: 2rem;
+    width: 50px;
+    height: 50px;
+  }
+
+  .categoryName {
+    font-size: 1rem;
+  }
+
+  .categoryDescription {
+    font-size: 0.8rem;
+    -webkit-line-clamp: 2;
+    max-height: 2.4em;
+  }
+
   .categoryButton {
     min-width: 110px;
     padding: 1rem 1.5rem;
   }
 
-  .categoryIcon {
+  .categoryButton .categoryIcon {
     font-size: 1.5rem;
   }
 
-  .categoryName {
+  .categoryButton .categoryName {
     font-size: 0.85rem;
   }
 
   .productsGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
   }
 }
@@ -338,16 +496,38 @@
     padding: 0 0.5rem 1.5rem;
   }
 
+  .categoryCard {
+    width: 140px;
+    height: 140px;
+    padding: 1rem;
+  }
+
+  .categoryIcon {
+    font-size: 1.8rem;
+    width: 45px;
+    height: 45px;
+  }
+
+  .categoryName {
+    font-size: 0.9rem;
+  }
+
+  .categoryDescription {
+    font-size: 0.75rem;
+    -webkit-line-clamp: 2;
+    max-height: 2.2em;
+  }
+
   .categoryButton {
     min-width: 100px;
     padding: 0.8rem 1.2rem;
   }
 
-  .categoryIcon {
+  .categoryButton .categoryIcon {
     font-size: 1.3rem;
   }
 
-  .categoryName {
+  .categoryButton .categoryName {
     font-size: 0.8rem;
   }
 
@@ -378,10 +558,16 @@
   }
 }
 
-/* Hide navigation arrows on very small screens */
-@media (max-width: 360px) {
+/* Hide navigation arrows on small screens and below */
+@media (max-width: 640px) {
   .categorySwiper :global(.swiper-button-next),
   .categorySwiper :global(.swiper-button-prev) {
     display: none;
+  }
+  .swiper-button-prev {
+    display: none !important;
+  }
+  .swiper-button-next {
+    display: none !important;
   }
 }

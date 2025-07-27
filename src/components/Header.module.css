@@ -109,8 +109,8 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .nav {
-    justify-content: space-between;
-    flex-direction: row-reverse;
+    justify-content: center;
+    position: relative;
   }
   .desktopNav {
     display: none;
@@ -122,6 +122,8 @@
 
   .hamburgerButton {
     display: flex;
+    position: absolute;
+    right: 0;
   }
 }
 
@@ -137,7 +139,6 @@
   .hamburgerButton {
     width: 30px;
     height: 30px;
-    margin-left: 10px;
     margin-right: 10px;
   }
 

@@ -104,7 +104,7 @@ export default function ProductModal({
           </div>
 
           <div className={styles.formGroup}>
-            <label>قیمت (تومان)</label>
+            <label>قیمت ()</label>
             <input
               type="number"
               name="price"

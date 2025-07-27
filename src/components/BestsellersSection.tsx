@@ -142,8 +142,7 @@ const BestsellersSection: React.FC = () => {
               image={getImageUrl(product.image_url) || "/menu-items/coffee.png"}
               name={product.name}
               desc={product.description || ""}
-              price={`${product.price.toLocaleString()} تومان`}
-              useNextImage={false}
+              price={`${product.price.toLocaleString()} `}
             />
           </SwiperSlide>
         ))}

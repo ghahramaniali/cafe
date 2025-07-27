@@ -99,7 +99,7 @@ export default function Home() {
 
       {/* Full Menu */}
       <section className={styles.bestsellers}>
-        <h2>آیتم های کافه لئون</h2>
+        <h2>پیشنهادات کافه لئون</h2>
         {loading ? (
           <div style={{ textAlign: "center", padding: "2rem" }}>
             <p>در حال بارگذاری...</p>
@@ -112,8 +112,7 @@ export default function Home() {
                 image={item.image_url || "/menu-items/coffee.png"}
                 name={item.name}
                 desc={item.description || ""}
-                price={`${item.price.toLocaleString()} تومان`}
-                useNextImage={true}
+                price={`${item.price.toLocaleString()} `}
               />
             ))}
           </div>

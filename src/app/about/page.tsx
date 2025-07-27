@@ -317,7 +317,7 @@ export default function AboutPage() {
             <div>
               <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📍</div>
               <h4 style={{ margin: "0 0 0.5rem 0" }}>آدرس</h4>
-              <p style={{ margin: 0 }}>تهران، خیابان ولیعصر</p>
+              <p style={{ margin: 0 }}>خیابان امام،جنب شیرینی سرای معینی،کافه لئون</p>
             </div>
           </div>
           <Link

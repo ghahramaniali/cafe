@@ -329,6 +329,7 @@
   transition: all 0.3s;
   border: 2px solid transparent;
   cursor: pointer;
+  min-width: 150px;
 }
 
 .categoryCard:hover {
@@ -363,7 +364,7 @@
 .bestsellers h2,
 .popular h2 {
   text-align: center;
-  font-size: 2.5rem;
+  font-size: 2rem;
   color: #8b4513;
   margin-bottom: 3rem;
   font-weight: bold;
@@ -508,7 +509,7 @@
 }
 
 .instantText h2 {
-  font-size: 2.5rem;
+  font-size: 2rem;
   margin-bottom: 1rem;
   font-weight: bold;
 }
@@ -781,6 +782,13 @@
   }
 }
 
+@media (max-width: 640px) {
+  .productGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
 @media (max-width: 480px) {
   .hero,
   .categories,
@@ -799,9 +807,7 @@
     grid-template-columns: 1fr;
   }
 
-  .productGrid {
-    grid-template-columns: 1fr;
-  }
+ 
 
   .testimonialGrid {
     grid-template-columns: 1fr;

@@ -21,7 +21,6 @@
   max-height: 140px;
   object-fit: contain;
   border-radius: 0.8rem;
-  margin-bottom: 1rem;
 
 }
 
@@ -39,6 +38,9 @@
   margin-bottom: 0.7rem;
   text-align: center;
   min-height: 2.2em;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
 }
 
 .productPrice {
@@ -46,6 +48,7 @@
   font-weight: 500;
   color: #7c4d1e;
   margin-bottom: 1.1rem;
+  width: 100%;
 }
 
 .orderButton {
@@ -56,12 +59,14 @@
   padding: 0.6rem 1.6rem;
   font-size: 1rem;
   font-weight: 500;
+  width: 100%;
+  max-width: 120px;
   cursor: pointer;
   transition: background 0.18s, transform 0.18s;
   box-shadow: 0 2px 8px rgba(199, 144, 75, 0.08);
 }
 
 /* .orderButton:hover { */
-  /* background: linear-gradient(90deg, #7c4d1e 0%, #c7904b 100%); */
-  /* transform: translateY(-2px) scale(1.04); */
+/* background: linear-gradient(90deg, #7c4d1e 0%, #c7904b 100%); */
+/* transform: translateY(-2px) scale(1.04); */
 /* } */

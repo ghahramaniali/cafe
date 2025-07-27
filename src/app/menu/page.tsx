@@ -95,6 +95,10 @@ export default function ShopMenuPage() {
     return categoryColors.default;
   };
 
+  const handleCategoryClick = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+  };
+
   const filteredProducts =
     selectedCategory === "all"
       ? products
@@ -103,13 +107,10 @@ export default function ShopMenuPage() {
   return (
     <div className={styles.container}>
       {/* Header */}
-      <Header variant="transparent" />
+      <Header variant="solid" />
 
       {/* Page Title */}
-      <div className={styles.pageTitle}>
-        <h1>منوی کافه لئون</h1>
-        <p>بهترین قهوه‌ها و نوشیدنی‌های گرم و سرد</p>
-      </div>
+      <div className={styles.pageTitle}></div>
 
       {/* Category Swiper */}
       <div className={styles.categorySwiperContainer}>
@@ -124,72 +125,65 @@ export default function ShopMenuPage() {
           </div>
         ) : (
           <Swiper
-            modules={[Navigation, Pagination, FreeMode]}
-            spaceBetween={16}
-            slidesPerView="auto"
-            navigation={true}
-            dir="rtl"
-            pagination={{ clickable: true }}
-            freeMode={true}
-            className={styles.categorySwiper}
+            modules={[Navigation, Pagination]}
+            spaceBetween={20}
+            slidesPerView={1}
+            navigation
+            pagination={false}
+            loop={true}
             breakpoints={{
-              320: {
+              300: {
                 slidesPerView: 2,
-                spaceBetween: 12,
-              },
-              480: {
-                slidesPerView: 3,
-                spaceBetween: 16,
+                spaceBetween: 10,
               },
               768: {
                 slidesPerView: 4,
                 spaceBetween: 20,
               },
-              1024: {
-                slidesPerView: 5,
-                spaceBetween: 24,
+              1280: {
+                slidesPerView: 6,
+                spaceBetween: 20,
               },
             }}
+            className="category-swiper py-2"
           >
             {/* All Categories Option */}
-            <SwiperSlide className={styles.categorySlide}>
-              <button
-                onClick={() => setSelectedCategory("all")}
-                className={`${styles.categoryButton} ${
-                  selectedCategory === "all" ? styles.active : ""
-                }`}
-                style={
-                  {
-                    "--category-color": "#54372B",
-                  } as React.CSSProperties
-                }
+            <SwiperSlide className="py-2 my-2 md:p-0 md:m-0 sm:p-0!important sm:m-0!important">
+              <div
+                className={`${styles.categoryCard} ${
+                  selectedCategory === "all" ? styles.activeCategory : ""
+                } py-2 my-2 md:p-0 md:m-0 sm:p-0 sm:m-0`}
+                onClick={() => handleCategoryClick("all")}
               >
-                <span className={styles.categoryIcon}>☕</span>
-                <span className={styles.categoryName}>همه محصولات</span>
-              </button>
+                <div className={styles.categoryIcon}>🍽️</div>
+                <h3 className={styles.categoryName}>همه آیتم ها</h3>
+              </div>
             </SwiperSlide>
 
-            {/* Dynamic Categories from Backend */}
+            {/* Individual Categories */}
             {categories.map((category) => (
-              <SwiperSlide key={category.id} className={styles.categorySlide}>
-                <button
-                  onClick={() => setSelectedCategory(category.id.toString())}
-                  className={`${styles.categoryButton} ${
+              <SwiperSlide
+                key={category.id}
+                className="py-2 my-2 md:p-0 md:m-0 sm:p-0 sm:m-0"
+              >
+                <div
+                  className={`${
+                    styles.categoryCard
+                  } py-2 my-2 md:p-0 md:m-0 sm:p-0 sm:m-0 ${
                     selectedCategory === category.id.toString()
-                      ? styles.active
+                      ? styles.activeCategory
                       : ""
                   }`}
-                  style={
-                    {
-                      "--category-color": getCategoryColor(category.name),
-                    } as React.CSSProperties
-                  }
+                  onClick={() => handleCategoryClick(category.id.toString())}
                 >
-                  <span className={styles.categoryIcon}>
+                  <div
+                    className={styles.categoryIcon}
+                    style={{ backgroundColor: getCategoryColor(category.name) }}
+                  >
                     {getCategoryIcon(category.name)}
-                  </span>
-                  <span className={styles.categoryName}>{category.name}</span>
-                </button>
+                  </div>
+                  <h3 className={styles.categoryName}>{category.name}</h3>
+                </div>
               </SwiperSlide>
             ))}
           </Swiper>
@@ -216,22 +210,13 @@ export default function ShopMenuPage() {
                 image={product.image_url || "/menu-items/coffee.png"}
                 name={product.name}
                 desc={product.description || ""}
-                price={`${product.price.toLocaleString()} تومان`}
-                useNextImage={true}
+                price={`${product.price.toLocaleString()} `}
               />
             ))}
           </div>
         )}
       </div>
 
-      {/* Back to Home */}
-      <div className={styles.backToHome}>
-        <Link href="/" className={styles.backButton}>
-          بازگشت به صفحه اصلی
-        </Link>
-      </div>
-
-      {/* Footer */}
       <Footer />
     </div>
   );

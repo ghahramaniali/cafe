@@ -340,7 +340,7 @@ export default function ProductsSection({
               <h3>{product.name}</h3>
               <p className={styles.productCategory}>{product.category_name}</p>
               <p className={styles.productPrice}>
-                {product.price?.toLocaleString()} تومان
+                {product.price?.toLocaleString()}
               </p>
               <p className={styles.productStock}>
                 موجودی: {product.is_available ? "موجود" : "ناموجود"}
@@ -435,7 +435,7 @@ export default function ProductsSection({
               </div>
 
               <div className={styles.formGroup}>
-                <label>قیمت (تومان)</label>
+                <label>قیمت ()</label>
                 <input
                   type="number"
                   name="price"
