@@ -22,8 +22,10 @@ import styles from "./page.module.css";
 
 export default function ContactPage() {
   const [isMobile, setIsMobile] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
     const checkScreenSize = () => {
       setIsMobile(window.innerWidth < 768);
     };
@@ -32,6 +34,9 @@ export default function ContactPage() {
     window.addEventListener("resize", checkScreenSize);
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
+
+  // Don't render mobile-specific styles until client-side hydration is complete
+  const mobileStyles = isClient ? isMobile : false;
 
   // Contact data from Footer component
   const contactData = {
@@ -65,7 +70,7 @@ export default function ContactPage() {
           style={{
             display: "flex",
             justifyContent: "center",
-            marginBottom: isMobile ? "2rem" : "4rem",
+            marginBottom: mobileStyles ? "2rem" : "4rem",
           }}
         >
           {/* Contact Information */}
@@ -73,7 +78,7 @@ export default function ContactPage() {
             style={{
               backgroundColor: "#1a1a1a",
               borderRadius: "16px",
-              padding: isMobile ? "1.5rem" : "3rem",
+              padding: mobileStyles ? "1.5rem" : "3rem",
               color: "white",
               maxWidth: "1000px",
               width: "100%",
@@ -81,9 +86,9 @@ export default function ContactPage() {
           >
             <h2
               style={{
-                fontSize: isMobile ? "1.25rem" : "1.5rem",
+                fontSize: mobileStyles ? "1.25rem" : "1.5rem",
                 fontWeight: "500",
-                margin: isMobile ? "0 0 2rem 0" : "0 0 3rem 0",
+                margin: mobileStyles ? "0 0 2rem 0" : "0 0 3rem 0",
                 textAlign: "center",
               }}
             >
@@ -93,27 +98,27 @@ export default function ContactPage() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)",
-                gap: isMobile ? "1.5rem" : "2rem",
+                gridTemplateColumns: mobileStyles ? "1fr" : "repeat(2, 1fr)",
+                gap: mobileStyles ? "1.5rem" : "2rem",
               }}
             >
               <div
                 style={{
                   display: "flex",
                   alignItems: "flex-start",
-                  gap: isMobile ? "1rem" : "1.5rem",
+                  gap: mobileStyles ? "1rem" : "1.5rem",
                 }}
               >
                 <div
                   style={{
-                    width: isMobile ? "40px" : "48px",
-                    height: isMobile ? "40px" : "48px",
+                    width: mobileStyles ? "40px" : "48px",
+                    height: mobileStyles ? "40px" : "48px",
                     backgroundColor: "rgba(255, 255, 255, 0.1)",
                     borderRadius: "12px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: isMobile ? "1rem" : "1.25rem",
+                    fontSize: mobileStyles ? "1rem" : "1.25rem",
                     flexShrink: 0,
                   }}
                 >
@@ -123,7 +128,7 @@ export default function ContactPage() {
                   <h4
                     style={{
                       margin: "0 0 0.5rem 0",
-                      fontSize: isMobile ? "0.9rem" : "1rem",
+                      fontSize: mobileStyles ? "0.9rem" : "1rem",
                       fontWeight: "500",
                     }}
                   >
@@ -132,7 +137,7 @@ export default function ContactPage() {
                   <p
                     style={{
                       margin: "0 0 0.25rem 0",
-                      fontSize: isMobile ? "0.9rem" : "1rem",
+                      fontSize: mobileStyles ? "0.9rem" : "1rem",
                       color: "#e5e7eb",
                     }}
                   >
@@ -141,7 +146,7 @@ export default function ContactPage() {
                   <p
                     style={{
                       margin: 0,
-                      fontSize: isMobile ? "0.8rem" : "0.875rem",
+                      fontSize: mobileStyles ? "0.8rem" : "0.875rem",
                       color: "#9ca3af",
                     }}
                   >
@@ -154,19 +159,19 @@ export default function ContactPage() {
                 style={{
                   display: "flex",
                   alignItems: "flex-start",
-                  gap: isMobile ? "1rem" : "1.5rem",
+                  gap: mobileStyles ? "1rem" : "1.5rem",
                 }}
               >
                 <div
                   style={{
-                    width: isMobile ? "40px" : "48px",
-                    height: isMobile ? "40px" : "48px",
+                    width: mobileStyles ? "40px" : "48px",
+                    height: mobileStyles ? "40px" : "48px",
                     backgroundColor: "rgba(255, 255, 255, 0.1)",
                     borderRadius: "12px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: isMobile ? "1rem" : "1.25rem",
+                    fontSize: mobileStyles ? "1rem" : "1.25rem",
                     flexShrink: 0,
                   }}
                 >
@@ -176,7 +181,7 @@ export default function ContactPage() {
                   <h4
                     style={{
                       margin: "0 0 0.5rem 0",
-                      fontSize: isMobile ? "0.9rem" : "1rem",
+                      fontSize: mobileStyles ? "0.9rem" : "1rem",
                       fontWeight: "500",
                     }}
                   >
@@ -185,7 +190,7 @@ export default function ContactPage() {
                   <p
                     style={{
                       margin: "0 0 0.25rem 0",
-                      fontSize: isMobile ? "0.9rem" : "1rem",
+                      fontSize: mobileStyles ? "0.9rem" : "1rem",
                       color: "#e5e7eb",
                     }}
                   >
@@ -194,7 +199,7 @@ export default function ContactPage() {
                   <p
                     style={{
                       margin: 0,
-                      fontSize: isMobile ? "0.8rem" : "0.875rem",
+                      fontSize: mobileStyles ? "0.8rem" : "0.875rem",
                       color: "#9ca3af",
                     }}
                   >
@@ -207,19 +212,19 @@ export default function ContactPage() {
                 style={{
                   display: "flex",
                   alignItems: "flex-start",
-                  gap: isMobile ? "1rem" : "1.5rem",
+                  gap: mobileStyles ? "1rem" : "1.5rem",
                 }}
               >
                 <div
                   style={{
-                    width: isMobile ? "40px" : "48px",
-                    height: isMobile ? "40px" : "48px",
+                    width: mobileStyles ? "40px" : "48px",
+                    height: mobileStyles ? "40px" : "48px",
                     backgroundColor: "rgba(255, 255, 255, 0.1)",
                     borderRadius: "12px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: isMobile ? "1rem" : "1.25rem",
+                    fontSize: mobileStyles ? "1rem" : "1.25rem",
                     flexShrink: 0,
                   }}
                 >
@@ -229,7 +234,7 @@ export default function ContactPage() {
                   <h4
                     style={{
                       margin: "0 0 0.5rem 0",
-                      fontSize: isMobile ? "0.9rem" : "1rem",
+                      fontSize: mobileStyles ? "0.9rem" : "1rem",
                       fontWeight: "500",
                     }}
                   >
@@ -238,13 +243,12 @@ export default function ContactPage() {
                   <p
                     style={{
                       margin: "0 0 0.25rem 0",
-                      fontSize: isMobile ? "0.9rem" : "1rem",
+                      fontSize: mobileStyles ? "0.9rem" : "1rem",
                       color: "#e5e7eb",
                     }}
                   >
                     {contactData.address}
                   </p>
-                  
                 </div>
               </div>
 
@@ -252,19 +256,19 @@ export default function ContactPage() {
                 style={{
                   display: "flex",
                   alignItems: "flex-start",
-                  gap: isMobile ? "1rem" : "1.5rem",
+                  gap: mobileStyles ? "1rem" : "1.5rem",
                 }}
               >
                 <div
                   style={{
-                    width: isMobile ? "40px" : "48px",
-                    height: isMobile ? "40px" : "48px",
+                    width: mobileStyles ? "40px" : "48px",
+                    height: mobileStyles ? "40px" : "48px",
                     backgroundColor: "rgba(255, 255, 255, 0.1)",
                     borderRadius: "12px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: isMobile ? "1rem" : "1.25rem",
+                    fontSize: mobileStyles ? "1rem" : "1.25rem",
                     flexShrink: 0,
                   }}
                 >
@@ -274,7 +278,7 @@ export default function ContactPage() {
                   <h4
                     style={{
                       margin: "0 0 0.5rem 0",
-                      fontSize: isMobile ? "0.9rem" : "1rem",
+                      fontSize: mobileStyles ? "0.9rem" : "1rem",
                       fontWeight: "500",
                     }}
                   >
@@ -283,7 +287,7 @@ export default function ContactPage() {
                   <p
                     style={{
                       margin: "0 0 0.25rem 0",
-                      fontSize: isMobile ? "0.9rem" : "1rem",
+                      fontSize: mobileStyles ? "0.9rem" : "1rem",
                       color: "#e5e7eb",
                     }}
                   >
@@ -292,7 +296,7 @@ export default function ContactPage() {
                   <p
                     style={{
                       margin: 0,
-                      fontSize: isMobile ? "0.8rem" : "0.875rem",
+                      fontSize: mobileStyles ? "0.8rem" : "0.875rem",
                       color: "#9ca3af",
                     }}
                   >
@@ -305,16 +309,16 @@ export default function ContactPage() {
             {/* Social Media */}
             <div
               style={{
-                marginTop: isMobile ? "2rem" : "3rem",
-                paddingTop: isMobile ? "1.5rem" : "2rem",
+                marginTop: mobileStyles ? "2rem" : "3rem",
+                paddingTop: mobileStyles ? "1.5rem" : "2rem",
                 borderTop: "1px solid rgba(255, 255, 255, 0.1)",
               }}
             >
               <h3
                 style={{
-                  fontSize: isMobile ? "1rem" : "1.1rem",
+                  fontSize: mobileStyles ? "1rem" : "1.1rem",
                   fontWeight: "500",
-                  margin: isMobile ? "0 0 1rem 0" : "0 0 1.5rem 0",
+                  margin: mobileStyles ? "0 0 1rem 0" : "0 0 1.5rem 0",
                   textAlign: "center",
                 }}
               >
@@ -324,7 +328,7 @@ export default function ContactPage() {
                 style={{
                   display: "flex",
                   justifyContent: "center",
-                  gap: isMobile ? "0.75rem" : "1rem",
+                  gap: mobileStyles ? "0.75rem" : "1rem",
                 }}
               >
                 {[
@@ -352,14 +356,14 @@ export default function ContactPage() {
                     style={{
                       backgroundColor: "rgba(255, 255, 255, 0.1)",
                       borderRadius: "12px",
-                      width: isMobile ? "48px" : "56px",
-                      height: isMobile ? "48px" : "56px",
+                      width: mobileStyles ? "48px" : "56px",
+                      height: mobileStyles ? "48px" : "56px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       cursor: "pointer",
                       transition: "all 0.2s ease",
-                      fontSize: isMobile ? "1.25rem" : "1.5rem",
+                      fontSize: mobileStyles ? "1.25rem" : "1.5rem",
                       textDecoration: "none",
                       color: "white",
                     }}
@@ -388,19 +392,19 @@ export default function ContactPage() {
           style={{
             backgroundColor: "white",
             borderRadius: "16px",
-            padding: isMobile ? "1.5rem" : "3rem",
+            padding: mobileStyles ? "1.5rem" : "3rem",
             textAlign: "center",
             boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
             border: "1px solid #f0f0f0",
-            marginBottom: isMobile ? "2rem" : "0",
+            marginBottom: mobileStyles ? "2rem" : "0",
           }}
         >
           <h2
             style={{
               color: "#1a1a1a",
-              fontSize: isMobile ? "1.25rem" : "1.5rem",
+              fontSize: mobileStyles ? "1.25rem" : "1.5rem",
               fontWeight: "500",
-              margin: isMobile ? "0 0 1.5rem 0" : "0 0 2rem 0",
+              margin: mobileStyles ? "0 0 1.5rem 0" : "0 0 2rem 0",
             }}
           >
             موقعیت ما روی نقشه
@@ -410,7 +414,7 @@ export default function ContactPage() {
               borderRadius: "12px",
               overflow: "hidden",
               border: "2px solid #e5e7eb",
-              minHeight: isMobile ? "300px" : "400px",
+              minHeight: mobileStyles ? "300px" : "400px",
               position: "relative",
             }}
           >
@@ -425,7 +429,7 @@ export default function ContactPage() {
               style={{
                 width: "100%",
                 height: "100%",
-                minHeight: isMobile ? "300px" : "400px",
+                minHeight: mobileStyles ? "300px" : "400px",
                 border: "none",
               }}
               title="موقعیت کافه لئون روی نقشه"
@@ -488,7 +492,6 @@ export default function ContactPage() {
               <FontAwesomeIcon icon={faLocationDot} />
               مشاهده در گوگل مپ
             </a>
-           
           </div>
         </div>
       </div>

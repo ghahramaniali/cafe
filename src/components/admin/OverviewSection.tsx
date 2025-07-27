@@ -46,7 +46,7 @@ export default function OverviewSection({
                 <p>{product.category_name}</p>
               </div>
               <div className={styles.productRevenue}>
-                {product.price?.toLocaleString()}
+                {product.price?.toLocaleString("fa-IR")}
               </div>
             </div>
           ))}

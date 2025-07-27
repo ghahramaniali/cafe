@@ -20,9 +20,8 @@ export default function Home() {
         // Fetch all available products from the backend
         const products = await productsApi.getAvailable();
 
-        // Randomly select 8 items
-        const shuffled = products.sort(() => 0.5 - Math.random());
-        const selectedProducts = shuffled.slice(0, 8);
+        // Take first 8 items instead of random selection to avoid hydration issues
+        const selectedProducts = products.slice(0, 8);
 
         setMenuItems(selectedProducts);
       } catch (error) {
@@ -112,7 +111,7 @@ export default function Home() {
                 image={item.image_url || "/menu-items/coffee.png"}
                 name={item.name}
                 desc={item.description || ""}
-                price={`${item.price.toLocaleString()} `}
+                price={`${item.price.toLocaleString("fa-IR")} `}
               />
             ))}
           </div>

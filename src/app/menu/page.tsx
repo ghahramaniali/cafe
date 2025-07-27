@@ -210,7 +210,7 @@ export default function ShopMenuPage() {
                 image={product.image_url || "/menu-items/coffee.png"}
                 name={product.name}
                 desc={product.description || ""}
-                price={`${product.price.toLocaleString()} `}
+                price={`${product.price.toLocaleString("fa-IR")} `}
               />
             ))}
           </div>

@@ -340,7 +340,7 @@ export default function ProductsSection({
               <h3>{product.name}</h3>
               <p className={styles.productCategory}>{product.category_name}</p>
               <p className={styles.productPrice}>
-                {product.price?.toLocaleString()}
+                {product.price?.toLocaleString("fa-IR")}
               </p>
               <p className={styles.productStock}>
                 موجودی: {product.is_available ? "موجود" : "ناموجود"}

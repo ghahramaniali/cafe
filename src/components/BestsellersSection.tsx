@@ -22,11 +22,10 @@ const BestsellersSection: React.FC = () => {
         setLoading(true);
         const favorites = await productsApi.getFavorites();
 
-        // Shuffle the array and take first 4 items
-        const shuffled = favorites.sort(() => 0.5 - Math.random());
-        const randomFour = shuffled.slice(0, 4);
+        // Take first 4 items instead of random selection to avoid hydration issues
+        const selectedFour = favorites.slice(0, 4);
 
-        setBestsellers(randomFour);
+        setBestsellers(selectedFour);
       } catch (err) {
         console.error("Error fetching bestsellers:", err);
         setError("Failed to load bestsellers");
@@ -142,7 +141,7 @@ const BestsellersSection: React.FC = () => {
               image={getImageUrl(product.image_url) || "/menu-items/coffee.png"}
               name={product.name}
               desc={product.description || ""}
-              price={`${product.price.toLocaleString()} `}
+              price={`${product.price.toLocaleString("fa-IR")} `}
             />
           </SwiperSlide>
         ))}
