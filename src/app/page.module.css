@@ -740,8 +740,11 @@
     flex-direction: column;
     text-align: center;
     gap: 0rem;
+    margin-top: 2rem;
   }
-
+  .heroText p {
+    margin-bottom: 1rem;
+  }
   .heroText h1 {
     font-size: 2rem;
   }
@@ -806,8 +809,6 @@
   .categoryGrid {
     grid-template-columns: 1fr;
   }
-
- 
 
   .testimonialGrid {
     grid-template-columns: 1fr;

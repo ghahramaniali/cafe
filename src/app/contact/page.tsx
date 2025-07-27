@@ -33,6 +33,28 @@ export default function ContactPage() {
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
+  // Contact data from Footer component
+  const contactData = {
+    phone: "09109705203",
+    address: "خیابان امام، جنب شیرینی سرای معینی ",
+    workingHours: {
+      weekdays: "شنبه تا پنجشنبه: ۹:۰۰ - ۲۱:۰۰",
+      friday: "جمعه: ۱۰:۰۰ - ۲۱:۰۰",
+    },
+    socialMedia: {
+      instagram: "https://instagram.com/_leon_coffee",
+      telegram: "https://t.me/a_vlz",
+      whatsapp: "https://wa.me/989109705203",
+    },
+  };
+
+  // Map coordinates
+  const mapCoordinates = {
+    lat: 36.399327,
+    lng: 47.112999,
+    zoom: 16,
+  };
+
   return (
     <div className={styles.container}>
       {/* Header */}
@@ -114,7 +136,7 @@ export default function ContactPage() {
                       color: "#e5e7eb",
                     }}
                   >
-                    ۰۲۱-۱۲۳۴۵۶۷۸
+                    {contactData.phone}
                   </p>
                   <p
                     style={{
@@ -123,12 +145,12 @@ export default function ContactPage() {
                       color: "#9ca3af",
                     }}
                   >
-                    شنبه تا چهارشنبه: ۸ صبح تا ۸ شب
+                    پاسخگویی در تمام ساعات کاری
                   </p>
                 </div>
               </div>
 
-              <div
+              {/* <div
                 style={{
                   display: "flex",
                   alignItems: "flex-start",
@@ -178,8 +200,8 @@ export default function ContactPage() {
                   >
                     پاسخگویی در کمتر از ۲۴ ساعت
                   </p>
-                </div>
-              </div>
+                </div> 
+              </div> */}
 
               <div
                 style={{
@@ -219,16 +241,10 @@ export default function ContactPage() {
                       fontSize: isMobile ? "0.9rem" : "1rem",
                       color: "#e5e7eb",
                     }}
-                    >خیابان امام،جنب شیرینی سرای معینی،کافه لئون</p>
-                  <p
-                    style={{
-                      margin: 0,
-                      fontSize: isMobile ? "0.8rem" : "0.875rem",
-                      color: "#9ca3af",
-                    }}
                   >
-                    پلاک ۱۲۳، طبقه همکف
+                    {contactData.address}
                   </p>
+                  
                 </div>
               </div>
 
@@ -271,7 +287,7 @@ export default function ContactPage() {
                       color: "#e5e7eb",
                     }}
                   >
-                    شنبه تا چهارشنبه: ۸ صبح تا ۸ شب
+                    {contactData.workingHours.weekdays}
                   </p>
                   <p
                     style={{
@@ -280,7 +296,7 @@ export default function ContactPage() {
                       color: "#9ca3af",
                     }}
                   >
-                    پنجشنبه: ۸ صبح تا ۶ عصر
+                    {contactData.workingHours.friday}
                   </p>
                 </div>
               </div>
@@ -312,12 +328,27 @@ export default function ContactPage() {
                 }}
               >
                 {[
-                  { icon: faTelegram, label: "تلگرام" },
-                  { icon: faInstagram, label: "اینستاگرام" },
-                  { icon: faWhatsapp, label: "واتساپ" },
+                  {
+                    icon: faTelegram,
+                    label: "تلگرام",
+                    url: contactData.socialMedia.telegram,
+                  },
+                  {
+                    icon: faInstagram,
+                    label: "اینستاگرام",
+                    url: contactData.socialMedia.instagram,
+                  },
+                  {
+                    icon: faWhatsapp,
+                    label: "واتساپ",
+                    url: contactData.socialMedia.whatsapp,
+                  },
                 ].map((social, index) => (
-                  <div
+                  <a
                     key={index}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     style={{
                       backgroundColor: "rgba(255, 255, 255, 0.1)",
                       borderRadius: "12px",
@@ -329,6 +360,8 @@ export default function ContactPage() {
                       cursor: "pointer",
                       transition: "all 0.2s ease",
                       fontSize: isMobile ? "1.25rem" : "1.5rem",
+                      textDecoration: "none",
+                      color: "white",
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.backgroundColor =
@@ -343,7 +376,7 @@ export default function ContactPage() {
                     title={social.label}
                   >
                     <FontAwesomeIcon icon={social.icon} />
-                  </div>
+                  </a>
                 ))}
               </div>
             </div>
@@ -374,31 +407,88 @@ export default function ContactPage() {
           </h2>
           <div
             style={{
-              backgroundColor: "#f8fafc",
               borderRadius: "12px",
-              padding: isMobile ? "2rem 1rem" : "4rem 2rem",
-              color: "#64748b",
-              fontSize: isMobile ? "0.9rem" : "1rem",
-              border: "2px dashed #cbd5e1",
-              minHeight: isMobile ? "200px" : "300px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
+              overflow: "hidden",
+              border: "2px solid #e5e7eb",
+              minHeight: isMobile ? "300px" : "400px",
+              position: "relative",
             }}
           >
-            نقشه گوگل در اینجا نمایش داده خواهد شد
-            <br />
-            <span
+            <iframe
+              src={`https://www.openstreetmap.org/export/embed.html?bbox=${
+                mapCoordinates.lng - 0.01
+              },${mapCoordinates.lat - 0.01},${mapCoordinates.lng + 0.01},${
+                mapCoordinates.lat + 0.01
+              }&layer=mapnik&marker=${mapCoordinates.lat},${
+                mapCoordinates.lng
+              }`}
               style={{
-                fontSize: isMobile ? "0.8rem" : "0.9rem",
-                color: "#94a3b8",
-                marginTop: "0.5rem",
-                display: "inline-block",
+                width: "100%",
+                height: "100%",
+                minHeight: isMobile ? "300px" : "400px",
+                border: "none",
+              }}
+              title="موقعیت کافه لئون روی نقشه"
+              allowFullScreen
+              loading="lazy"
+            />
+            <div
+              style={{
+                /* position: "absolute", */
+                bottom: "10px",
+                left: "10px",
+                backgroundColor: "rgba(255, 255, 255, 0.9)",
+                padding: "8px 12px",
+                borderRadius: "8px",
+                fontSize: "0.875rem",
+                color: "#374151",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+                backdropFilter: "blur(4px)",
               }}
             >
-              تهران، خیابان ولیعصر، پلاک ۱۲۳
-            </span>
+              <strong>کافه لئون</strong>
+              <br />
+              {contactData.address}
+            </div>
+          </div>
+          <div
+            style={{
+              marginTop: "1rem",
+              display: "flex",
+              justifyContent: "center",
+              gap: "1rem",
+            }}
+          >
+            <a
+              href={`https://maps.google.com/maps?q=${mapCoordinates.lat},${mapCoordinates.lng}&ll=${mapCoordinates.lat},${mapCoordinates.lng}&z=${mapCoordinates.zoom}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                backgroundColor: "#1a1a1a",
+                color: "white",
+                padding: "0.75rem 1.5rem",
+                borderRadius: "8px",
+                textDecoration: "none",
+                fontSize: "0.875rem",
+                fontWeight: "500",
+                transition: "all 0.2s ease",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.5rem",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#374151";
+                e.currentTarget.style.transform = "translateY(-1px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "#1a1a1a";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
+              <FontAwesomeIcon icon={faLocationDot} />
+              مشاهده در گوگل مپ
+            </a>
+           
           </div>
         </div>
       </div>
