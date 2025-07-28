@@ -16,18 +16,18 @@ const auth = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log('Auth middleware - Token decoded successfully:', { userId: decoded.userId });
     
-    const result = await pool.query('SELECT * FROM users WHERE id = $1', [decoded.userId]);
+    const [result] = await pool.execute('SELECT * FROM users WHERE id = ?', [decoded.userId]);
     console.log('Auth middleware - Database query result:', { 
-      rowsFound: result.rows.length,
-      userFound: result.rows.length > 0 ? { id: result.rows[0].id, username: result.rows[0].username } : null
+      rowsFound: result.length,
+      userFound: result.length > 0 ? { id: result[0].id, username: result[0].username } : null
     });
     
-    if (result.rows.length === 0) {
+    if (result.length === 0) {
       console.log('Auth middleware - User not found or not active');
       return res.status(401).json({ message: 'Token is not valid' });
     }
 
-    req.user = result.rows[0];
+    req.user = result[0];
     console.log('Auth middleware - Authentication successful for user:', req.user.username);
     next();
   } catch (error) {

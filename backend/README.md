@@ -1,34 +1,24 @@
 # Cafe Backend API
 
-Express.js backend with PostgreSQL for a cafe management system.
+A Node.js/Express.js backend API for a cafe management system using MySQL database.
 
 ## Features
 
-- **Authentication**: JWT-based authentication with user registration and login
-- **Categories Management**: CRUD operations for product categories
-- **Products Management**: Full product management with search and filtering
-- **User Management**: Admin user management capabilities
-- **Bilingual Support**: Persian and English content support
+- **User Authentication**: JWT-based authentication with admin privileges
+- **Product Management**: CRUD operations for products with image uploads
+- **Category Management**: Organize products by categories
+- **File Upload**: Image upload functionality for products and categories
+- **Admin Dashboard**: Admin-only endpoints for managing the system
 
-## Database Schema
-
-### Tables
-
-1. **categories** - Product categories (دسته بندی ها)
-2. **users** - User accounts (کاربران)
-3. **products** - Products/Menu items (محصولات)
-
-## Setup Instructions
-
-### Prerequisites
+## Prerequisites
 
 - Node.js (v14 or higher)
-- PostgreSQL (v12 or higher)
+- MySQL Server (v8.0 or higher)
 - npm or yarn
 
-### Installation
+## Installation
 
-1. **Clone the repository and navigate to backend directory:**
+1. **Clone the repository and navigate to the backend directory:**
 
    ```bash
    cd backend
@@ -46,177 +36,205 @@ Express.js backend with PostgreSQL for a cafe management system.
    cp env.example .env
    ```
 
-   Edit `.env` file with your database credentials:
+   Update the `.env` file with your MySQL credentials:
 
    ```env
    DB_HOST=localhost
-   DB_PORT=5432
+   DB_PORT=3306
    DB_NAME=cafe_db
-   DB_USER=postgres
-   DB_PASSWORD=your_password
+   DB_USER=root
+   DB_PASSWORD=mysql.1234567
    PORT=5000
-   JWT_SECRET=your_jwt_secret_key_here
+   NODE_ENV=development
+   JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
    CORS_ORIGIN=http://localhost:3000
    ```
 
-4. **Create PostgreSQL database:**
-
-   ```sql
-   CREATE DATABASE cafe_db;
-   ```
-
-5. **Run database schema:**
+4. **Set up the database:**
 
    ```bash
-   psql -d cafe_db -f database/schema.sql
+   npm run setup
    ```
 
-6. **Start the server:**
+   This will:
+
+   - Create the MySQL database
+   - Create all necessary tables
+   - Insert sample data (categories, products, admin user)
+
+## Database Setup
+
+The setup script will create the following tables:
+
+### Users Table
+
+- `id` (AUTO_INCREMENT PRIMARY KEY)
+- `name` (VARCHAR)
+- `phone` (VARCHAR, UNIQUE)
+- `password` (VARCHAR - hashed)
+- `is_admin` (BOOLEAN)
+- `created_at` (TIMESTAMP)
+- `updated_at` (TIMESTAMP)
+
+### Categories Table
+
+- `id` (VARCHAR(36) PRIMARY KEY - UUID)
+- `name` (VARCHAR)
+- `description` (TEXT)
+- `image_url` (VARCHAR)
+- `created_at` (TIMESTAMP)
+- `updated_at` (TIMESTAMP)
+
+### Products Table
+
+- `id` (VARCHAR(36) PRIMARY KEY - UUID)
+- `name` (VARCHAR)
+- `category_id` (VARCHAR(36) - Foreign Key)
+- `price` (DECIMAL(10,2))
+- `description` (TEXT)
+- `image_url` (VARCHAR)
+- `is_available` (BOOLEAN)
+- `is_favorite` (BOOLEAN)
+- `created_at` (TIMESTAMP)
+- `updated_at` (TIMESTAMP)
+
+## Sample Data
+
+The setup script includes sample data:
+
+### Categories
+
+- قهوه (Coffee)
+- اسپرسو (Espresso)
+- کاپوچینو (Cappuccino)
+- نوشیدنی‌های سرد (Cold Drinks)
+- کیک و شیرینی (Pastries)
+
+### Products
+
+- اسپرسو کلاسیک (Classic Espresso)
+- لاته وانیل (Vanilla Latte)
+- کاپوچینو (Cappuccino)
+- کولد برو (Cold Brew)
+- آب پرتقال (Orange Juice)
+- کروسان شکلات (Chocolate Croissant)
+- آمریکانو (Americano)
+- موکا (Mocha)
+
+### Default Admin User
+
+- **Phone**: 09123456789
+- **Password**: admin123
+- **Role**: Admin
+
+## Running the Application
+
+1. **Start the development server:**
 
    ```bash
-   # Development mode
    npm run dev
+   ```
 
-   # Production mode
+2. **For production:**
+   ```bash
    npm start
    ```
 
+The server will start on `http://localhost:5000` (or the port specified in your `.env` file).
+
 ## API Endpoints
 
-### Authentication (`/api/auth`)
+### Authentication
 
-- `POST /register` - Register new user
-- `POST /login` - User login
-- `GET /me` - Get current user (authenticated)
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - Login user
+- `GET /api/auth/me` - Get current user info
 
-### Categories (`/api/categories`)
+### Products
 
-- `GET /` - Get all categories
-- `GET /:id` - Get category by ID
-- `POST /` - Create new category (admin only)
-- `PUT /:id` - Update category (admin only)
-- `DELETE /:id` - Delete category (admin only)
-- `GET /:id/products` - Get products by category
+- `GET /api/products` - Get all products
+- `GET /api/products/:id` - Get product by ID
+- `POST /api/products` - Create new product (Admin)
+- `PUT /api/products/:id` - Update product (Admin)
+- `DELETE /api/products/:id` - Delete product (Admin)
+- `GET /api/products/favorites/list` - Get favorite products
+- `GET /api/products/search/:query` - Search products
 
-### Products (`/api/products`)
+### Categories
 
-- `GET /` - Get all products (with filters)
-- `GET /:id` - Get product by ID
-- `POST /` - Create new product (admin only)
-- `PUT /:id` - Update product (admin only)
-- `DELETE /:id` - Delete product (admin only)
-- `GET /featured/list` - Get featured products
-- `GET /search/:query` - Search products
+- `GET /api/categories` - Get all categories
+- `GET /api/categories/:id` - Get category by ID
+- `POST /api/categories` - Create new category (Admin)
+- `PUT /api/categories/:id` - Update category (Admin)
+- `DELETE /api/categories/:id` - Delete category (Admin)
+- `GET /api/categories/:id/products` - Get products by category
 
+### Users (Admin Only)
 
+- `GET /api/users` - Get all users
+- `GET /api/users/:id` - Get user by ID
+- `PUT /api/users/:id` - Update user
+- `PATCH /api/users/:id/password` - Change user password
+- `PATCH /api/users/:id/toggle-admin` - Toggle admin status
+- `DELETE /api/users/:id` - Delete user
+- `GET /api/users/stats/overview` - Get user statistics
 
-### Users (`/api/users`)
+### File Upload
 
-- `GET /` - Get all users (admin only)
-- `GET /:id` - Get user by ID (admin only)
-- `PUT /:id` - Update user (admin only)
-- `PATCH /:id/password` - Change user password (admin only)
-- `PATCH /:id/toggle-status` - Toggle user status (admin only)
-- `DELETE /:id` - Delete user (admin only)
-- `GET /stats/overview` - Get user statistics (admin only)
+- `POST /api/upload/image` - Upload single image
+- `POST /api/upload/images` - Upload multiple images
+- `DELETE /api/upload/image/:filename` - Delete image
 
-## Authentication
-
-The API uses JWT tokens for authentication. Include the token in the Authorization header:
+## File Structure
 
 ```
-Authorization: Bearer <your_jwt_token>
+backend/
+├── config/
+│   └── database.js          # MySQL database configuration
+├── middleware/
+│   └── auth.js             # JWT authentication middleware
+├── routes/
+│   ├── auth.js             # Authentication routes
+│   ├── products.js         # Product management routes
+│   ├── categories.js       # Category management routes
+│   ├── users.js           # User management routes
+│   └── upload.js          # File upload routes
+├── scripts/
+│   └── setup.js           # Database setup script
+├── uploads/               # Uploaded files directory
+├── server.js              # Main server file
+├── package.json
+└── README.md
 ```
-
-## Request/Response Examples
-
-### Register User
-
-```bash
-POST /api/auth/register
-Content-Type: application/json
-
-{
-  "username": "john_doe",
-  "email": "john@example.com",
-  "password": "password123",
-  "first_name": "John",
-  "last_name": "Doe",
-  "phone": "+1234567890"
-}
-```
-
-### Create Product
-
-```bash
-POST /api/products
-Authorization: Bearer <admin_token>
-Content-Type: application/json
-
-{
-  "name": "Espresso",
-  "name_fa": "اسپرسو",
-  "category_id": "uuid-here",
-  "price": 3.50,
-  "description": "Strong Italian coffee",
-  "description_fa": "قهوه ایتالیایی قوی",
-  "is_available": true,
-  "is_featured": false
-}
-```
-
-
 
 ## Error Handling
 
-The API returns consistent error responses:
+The API includes comprehensive error handling for:
 
-```json
-{
-  "message": "Error description",
-  "errors": [
-    {
-      "field": "email",
-      "message": "Please enter a valid email"
-    }
-  ]
-}
-```
-
-## Development
-
-### Scripts
-
-- `npm run dev` - Start development server with nodemon
-- `npm start` - Start production server
-- `npm test` - Run tests (not implemented yet)
-
-### Environment Variables
-
-- `DB_HOST` - PostgreSQL host
-- `DB_PORT` - PostgreSQL port
-- `DB_NAME` - Database name
-- `DB_USER` - Database username
-- `DB_PASSWORD` - Database password
-- `PORT` - Server port
-- `JWT_SECRET` - JWT signing secret
-- `CORS_ORIGIN` - Allowed CORS origin
-- `NODE_ENV` - Environment (development/production)
+- Database connection errors
+- Authentication failures
+- File upload errors
+- Validation errors
+- Authorization errors
 
 ## Security Features
 
 - Password hashing with bcrypt
 - JWT token authentication
-- Input validation with express-validator
-- CORS configuration
+- Admin role-based access control
+- File upload validation
 - SQL injection prevention with parameterized queries
-- Role-based access control (admin/user)
 
-## Database Features
+## Development
 
-- UUID primary keys
-- Automatic timestamp updates
-- Foreign key constraints
-- Indexes for performance
-- Soft delete support (is_active flags)
-- Bilingual content support (Persian/English)
+To contribute to this project:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## License
+
+This project is licensed under the ISC License.

@@ -9,10 +9,10 @@ const router = express.Router();
 // Get all users (Admin only)
 router.get('/', adminAuth, async (req, res) => {
   try {
-    const result = await pool.query(
+    const [result] = await pool.execute(
       'SELECT id, name, phone, is_admin FROM users ORDER BY id DESC'
     );
-    res.json(result.rows);
+    res.json(result);
   } catch (error) {
     console.error('Get users error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -23,16 +23,16 @@ router.get('/', adminAuth, async (req, res) => {
 router.get('/:id', adminAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await pool.query(
-      'SELECT id, name, phone, is_admin FROM users WHERE id = $1',
+    const [result] = await pool.execute(
+      'SELECT id, name, phone, is_admin FROM users WHERE id = ?',
       [id]
     );
     
-    if (result.rows.length === 0) {
+    if (result.length === 0) {
       return res.status(404).json({ message: 'User not found' });
     }
     
-    res.json(result.rows[0]);
+    res.json(result[0]);
   } catch (error) {
     console.error('Get user error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -53,16 +53,22 @@ router.put('/:id', adminAuth, [
     const { id } = req.params;
     const { name, phone, is_admin } = req.body;
 
-    const result = await pool.query(
-      'UPDATE users SET name = $1, phone = $2, is_admin = $3 WHERE id = $4 RETURNING id, name, phone, is_admin',
+    const [result] = await pool.execute(
+      'UPDATE users SET name = ?, phone = ?, is_admin = ? WHERE id = ?',
       [name, phone, is_admin, id]
     );
 
-    if (result.rows.length === 0) {
+    if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.json(result.rows[0]);
+    // Get the updated user
+    const [updatedUser] = await pool.execute(
+      'SELECT id, name, phone, is_admin FROM users WHERE id = ?',
+      [id]
+    );
+
+    res.json(updatedUser[0]);
   } catch (error) {
     console.error('Update user error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -86,12 +92,12 @@ router.patch('/:id/password', adminAuth, [
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(new_password, salt);
 
-    const result = await pool.query(
-      'UPDATE users SET password = $1 WHERE id = $2 RETURNING id',
+    const [result] = await pool.execute(
+      'UPDATE users SET password = ? WHERE id = ?',
       [passwordHash, id]
     );
 
-    if (result.rows.length === 0) {
+    if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'User not found' });
     }
 
@@ -107,18 +113,24 @@ router.patch('/:id/toggle-admin', adminAuth, async (req, res) => {
   try {
     const { id } = req.params;
 
-    const result = await pool.query(
-      'UPDATE users SET is_admin = NOT is_admin WHERE id = $1 RETURNING id, is_admin',
+    const [result] = await pool.execute(
+      'UPDATE users SET is_admin = NOT is_admin WHERE id = ?',
       [id]
     );
 
-    if (result.rows.length === 0) {
+    if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'User not found' });
     }
 
+    // Get the updated user
+    const [updatedUser] = await pool.execute(
+      'SELECT id, is_admin FROM users WHERE id = ?',
+      [id]
+    );
+
     res.json({ 
-      message: `User ${result.rows[0].is_admin ? 'promoted to admin' : 'removed from admin'} successfully`,
-      is_admin: result.rows[0].is_admin 
+      message: `User ${updatedUser[0].is_admin ? 'promoted to admin' : 'removed from admin'} successfully`,
+      is_admin: updatedUser[0].is_admin 
     });
   } catch (error) {
     console.error('Toggle user admin status error:', error);
@@ -131,9 +143,9 @@ router.delete('/:id', adminAuth, async (req, res) => {
   try {
     const { id } = req.params;
 
-    const result = await pool.query('DELETE FROM users WHERE id = $1 RETURNING id', [id]);
+    const [result] = await pool.execute('DELETE FROM users WHERE id = ?', [id]);
     
-    if (result.rows.length === 0) {
+    if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'User not found' });
     }
 
@@ -147,14 +159,14 @@ router.delete('/:id', adminAuth, async (req, res) => {
 // Get user statistics (Admin only)
 router.get('/stats/overview', adminAuth, async (req, res) => {
   try {
-    const stats = await pool.query(`
+    const [stats] = await pool.execute(`
       SELECT 
         COUNT(*) as total_users,
         COUNT(CASE WHEN is_admin = true THEN 1 END) as admin_users
       FROM users
     `);
 
-    res.json(stats.rows[0]);
+    res.json(stats[0]);
   } catch (error) {
     console.error('Get user stats error:', error);
     res.status(500).json({ message: 'Server error' });

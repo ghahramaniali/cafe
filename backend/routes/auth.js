@@ -23,12 +23,12 @@ router.post('/register', [
     const { username, email, password, name, phone } = req.body;
 
     // Check if user already exists
-    const userExists = await pool.query(
-      'SELECT * FROM users WHERE email = $1 OR username = $2',
+    const [userExists] = await pool.execute(
+      'SELECT * FROM users WHERE email = ? OR username = ?',
       [email, username]
     );
 
-    if (userExists.rows.length > 0) {
+    if (userExists.length > 0) {
       return res.status(400).json({ message: 'User already exists' });
     }
 
@@ -37,16 +37,21 @@ router.post('/register', [
     const passwordHash = await bcrypt.hash(password, salt);
 
     // Create user
-    const result = await pool.query(
-      'INSERT INTO users (username, email, password, name, phone) VALUES ($1, $2, $3, $4, $5) RETURNING id, username, email, name, is_admin',
+    const [result] = await pool.execute(
+      'INSERT INTO users (username, email, password, name, phone) VALUES (?, ?, ?, ?, ?)',
       [username, email, passwordHash, name, phone]
     );
 
-    const user = result.rows[0];
+    // Get the created user
+    const [user] = await pool.execute(
+      'SELECT id, username, email, name, is_admin FROM users WHERE id = LAST_INSERT_ID()'
+    );
+
+    const createdUser = user[0];
 
     // Create JWT token
     const token = jwt.sign(
-      { userId: user.id },
+      { userId: createdUser.id },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -55,11 +60,11 @@ router.post('/register', [
       message: 'User registered successfully',
       token,
       user: {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        name: user.name,
-        is_admin: user.is_admin
+        id: createdUser.id,
+        username: createdUser.username,
+        email: createdUser.email,
+        name: createdUser.name,
+        is_admin: createdUser.is_admin
       }
     });
 
@@ -83,16 +88,16 @@ router.post('/login', [
     const { username, password } = req.body;
 
     // Check if user exists by username
-    const result = await pool.query(
-      'SELECT * FROM users WHERE username = $1',
+    const [result] = await pool.execute(
+      'SELECT * FROM users WHERE username = ?',
       [username]
     );
 
-    if (result.rows.length === 0) {
+    if (result.length === 0) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    const user = result.rows[0];
+    const user = result[0];
 
     // Check password
     const isMatch = await bcrypt.compare(password, user.password);
@@ -158,13 +163,13 @@ router.post('/debug-token', async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     console.log('Debug endpoint - Decoded token:', decoded);
     
-    const result = await pool.query('SELECT id, username, email, is_admin FROM users WHERE id = $1', [decoded.userId]);
+    const [result] = await pool.execute('SELECT id, username, email, is_admin FROM users WHERE id = ?', [decoded.userId]);
     
     res.json({
       tokenValid: true,
       decoded,
-      user: result.rows[0] || null,
-      userExists: result.rows.length > 0
+      user: result[0] || null,
+      userExists: result.length > 0
     });
   } catch (error) {
     console.log('Debug endpoint - Error:', error.message);

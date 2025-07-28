@@ -51,8 +51,8 @@ const upload = multer({
 // Get all categories
 router.get('/', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM categories ORDER BY name');
-    res.json(result.rows);
+    const [result] = await pool.execute('SELECT * FROM categories ORDER BY name');
+    res.json(result);
   } catch (error) {
     console.error('Get categories error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -63,13 +63,13 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await pool.query('SELECT * FROM categories WHERE id = $1', [id]);
+    const [result] = await pool.execute('SELECT * FROM categories WHERE id = ?', [id]);
     
-    if (result.rows.length === 0) {
+    if (result.length === 0) {
       return res.status(404).json({ message: 'Category not found' });
     }
     
-    res.json(result.rows[0]);
+    res.json(result[0]);
   } catch (error) {
     console.error('Get category error:', error);
     res.status(500).json({ message: error.message });
@@ -89,12 +89,17 @@ router.post('/', adminAuth, [
 
     const { name, description, image_url } = req.body;
     
-    const result = await pool.query(
-      'INSERT INTO categories (name, description, image_url, created_at, updated_at) VALUES ($1, $2, $3, NOW(), NOW()) RETURNING *',
+    const [result] = await pool.execute(
+      'INSERT INTO categories (id, name, description, image_url, created_at, updated_at) VALUES (UUID(), ?, ?, ?, NOW(), NOW())',
       [name, description, image_url]
     );
 
-    res.status(201).json(result.rows[0]);
+    // Get the inserted category
+    const [insertedCategory] = await pool.execute(
+      'SELECT * FROM categories WHERE id = LAST_INSERT_ID()'
+    );
+
+    res.status(201).json(insertedCategory[0]);
   } catch (error) {
     console.error('Create category error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -115,16 +120,18 @@ router.put('/:id', adminAuth, [
     const { id } = req.params;
     const { name, description, image_url } = req.body;
 
-    const result = await pool.query(
-      'UPDATE categories SET name = $1, description = $2, image_url = $3, updated_at = NOW() WHERE id = $4 RETURNING *',
+    const [result] = await pool.execute(
+      'UPDATE categories SET name = ?, description = ?, image_url = ?, updated_at = NOW() WHERE id = ?',
       [name, description, image_url, id]
     );
 
-    if (result.rows.length === 0) {
+    if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Category not found' });
     }
 
-    res.json(result.rows[0]);
+    // Get the updated category
+    const [updatedCategory] = await pool.execute('SELECT * FROM categories WHERE id = ?', [id]);
+    res.json(updatedCategory[0]);
   } catch (error) {
     console.error('Update category error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -137,14 +144,14 @@ router.delete('/:id', adminAuth, async (req, res) => {
     const { id } = req.params;
 
     // Check if category has products
-    const productsResult = await pool.query('SELECT COUNT(*) FROM products WHERE category_id = $1', [id]);
-    if (parseInt(productsResult.rows[0].count) > 0) {
+    const [productsResult] = await pool.execute('SELECT COUNT(*) as count FROM products WHERE category_id = ?', [id]);
+    if (parseInt(productsResult[0].count) > 0) {
       return res.status(400).json({ message: 'Cannot delete category with existing products' });
     }
 
-    const result = await pool.query('DELETE FROM categories WHERE id = $1 RETURNING *', [id]);
+    const [result] = await pool.execute('DELETE FROM categories WHERE id = ?', [id]);
     
-    if (result.rows.length === 0) {
+    if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Category not found' });
     }
 
@@ -159,12 +166,12 @@ router.delete('/:id', adminAuth, async (req, res) => {
 router.get('/:id/products', async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await pool.query(
-      'SELECT p.*, c.name as category_name FROM products p JOIN categories c ON p.category_id = c.id WHERE p.category_id = $1 AND p.is_available = true ORDER BY p.name',
+    const [result] = await pool.execute(
+      'SELECT p.*, c.name as category_name FROM products p JOIN categories c ON p.category_id = c.id WHERE p.category_id = ? AND p.is_available = true ORDER BY p.name',
       [id]
     );
     
-    res.json(result.rows);
+    res.json(result);
   } catch (error) {
     console.error('Get category products error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -189,12 +196,17 @@ router.post('/with-image', adminAuth, upload.single('image'), [
       image_url = `/uploads/${req.file.filename}`;
     }
     
-    const result = await pool.query(
-      'INSERT INTO categories (name, description, image_url, created_at, updated_at) VALUES ($1, $2, $3, NOW(), NOW()) RETURNING *',
+    const [result] = await pool.execute(
+      'INSERT INTO categories (id, name, description, image_url, created_at, updated_at) VALUES (UUID(), ?, ?, ?, NOW(), NOW())',
       [name, description, image_url]
     );
 
-    res.status(201).json(result.rows[0]);
+    // Get the inserted category
+    const [insertedCategory] = await pool.execute(
+      'SELECT * FROM categories WHERE id = LAST_INSERT_ID()'
+    );
+
+    res.status(201).json(insertedCategory[0]);
   } catch (error) {
     console.error('Create category with image error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -216,18 +228,18 @@ router.put('/:id/with-image', adminAuth, upload.single('image'), [
     const { name, description } = req.body;
 
     // Get current category to check if it has an image
-    const currentCategory = await pool.query('SELECT image_url FROM categories WHERE id = $1', [id]);
-    if (currentCategory.rows.length === 0) {
+    const [currentCategory] = await pool.execute('SELECT image_url FROM categories WHERE id = ?', [id]);
+    if (currentCategory.length === 0) {
       return res.status(404).json({ message: 'Category not found' });
     }
 
-    let image_url = currentCategory.rows[0].image_url;
+    let image_url = currentCategory[0].image_url;
 
     // If a new image is uploaded, update the image_url
     if (req.file) {
       // Delete old image if it exists
-      if (currentCategory.rows[0].image_url) {
-        const oldImagePath = path.join(__dirname, '..', currentCategory.rows[0].image_url);
+      if (currentCategory[0].image_url) {
+        const oldImagePath = path.join(__dirname, '..', currentCategory[0].image_url);
         if (fs.existsSync(oldImagePath)) {
           fs.unlinkSync(oldImagePath);
         }
@@ -235,12 +247,14 @@ router.put('/:id/with-image', adminAuth, upload.single('image'), [
       image_url = `/uploads/${req.file.filename}`;
     }
 
-    const result = await pool.query(
-      'UPDATE categories SET name = $1, description = $2, image_url = $3, updated_at = NOW() WHERE id = $4 RETURNING *',
+    const [result] = await pool.execute(
+      'UPDATE categories SET name = ?, description = ?, image_url = ?, updated_at = NOW() WHERE id = ?',
       [name, description, image_url, id]
     );
 
-    res.json(result.rows[0]);
+    // Get the updated category
+    const [updatedCategory] = await pool.execute('SELECT * FROM categories WHERE id = ?', [id]);
+    res.json(updatedCategory[0]);
   } catch (error) {
     console.error('Update category with image error:', error);
     res.status(500).json({ message: 'Server error' });
