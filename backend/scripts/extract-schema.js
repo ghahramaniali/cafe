@@ -1,7 +1,7 @@
-const fs = require('fs');
+const fs = require("fs");
 
 // Extract schema from setup.js
-const setupContent = fs.readFileSync('scripts/setup.js', 'utf8');
+const setupContent = fs.readFileSync("scripts/setup.js", "utf8");
 
 // Extract CREATE TABLE statements
 const createTableRegex = /CREATE TABLE IF NOT EXISTS (\w+) \(([\s\S]*?)\)/g;
@@ -11,22 +11,22 @@ let match;
 while ((match = createTableRegex.exec(setupContent)) !== null) {
   const tableName = match[1];
   const tableDefinition = match[2];
-  
+
   tables.push({
     name: tableName,
-    definition: `CREATE TABLE IF NOT EXISTS ${tableName} (${tableDefinition})`
+    definition: `CREATE TABLE IF NOT EXISTS ${tableName} (${tableDefinition})`,
   });
 }
 
 // Generate schema file
 let schemaSQL = `-- Cafe Database Schema
 -- Generated from setup.js
--- Database: cafe_db
+-- Database: leoncafe_db
 
 `;
 
 // Add table creation statements
-tables.forEach(table => {
+tables.forEach((table) => {
   schemaSQL += `-- Table structure for table \`${table.name}\`
 ${table.definition};
 
@@ -60,16 +60,16 @@ INSERT IGNORE INTO users (name, phone, password, is_admin) VALUES
 `;
 
 // Write to file
-const filename = `cafe_schema_${new Date().toISOString().split('T')[0]}.sql`;
+const filename = `cafe_schema_${new Date().toISOString().split("T")[0]}.sql`;
 fs.writeFileSync(filename, schemaSQL);
 
-console.log('✅ Schema extracted successfully!');
+console.log("✅ Schema extracted successfully!");
 console.log(`📄 Schema file: ${filename}`);
-console.log('\n📋 Database Tables:');
-tables.forEach(table => {
+console.log("\n📋 Database Tables:");
+tables.forEach((table) => {
   console.log(`   - ${table.name}`);
 });
 
-console.log('\n🔑 Default Admin Account:');
-console.log('   Phone: 09123456789');
-console.log('   Password: admin123'); 
+console.log("\n🔑 Default Admin Account:");
+console.log("   Phone: 09123456789");
+console.log("   Password: admin123");

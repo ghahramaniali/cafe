@@ -41,7 +41,7 @@ A Node.js/Express.js backend API for a cafe management system using MySQL databa
    ```env
    DB_HOST=localhost
    DB_PORT=3306
-   DB_NAME=cafe_db
+   DB_NAME=leoncafe_db
    DB_USER=root
    DB_PASSWORD=mysql.1234567
    PORT=5000

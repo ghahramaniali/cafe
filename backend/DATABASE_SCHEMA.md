@@ -2,7 +2,7 @@
 
 ## Database Overview
 
-- **Database Name**: `cafe_db`
+- **Database Name**: `leoncafe_db`
 - **Engine**: MySQL
 - **Character Set**: UTF-8
 - **Collation**: utf8mb4_unicode_ci
@@ -144,20 +144,20 @@ INSERT INTO products (id, name, category_id, price, description, image_url, is_a
 
 ```bash
 # Export entire database
-mysqldump -u username -p cafe_db > cafe_backup.sql
+mysqldump -u username -p leoncafe_db > cafe_backup.sql
 
 # Export schema only
-mysqldump -u username -p --no-data cafe_db > cafe_schema.sql
+mysqldump -u username -p --no-data leoncafe_db > cafe_schema.sql
 
 # Export data only
-mysqldump -u username -p --no-create-info cafe_db > cafe_data.sql
+mysqldump -u username -p --no-create-info leoncafe_db > cafe_data.sql
 ```
 
 ### Restoring Database
 
 ```bash
 # Restore from backup
-mysql -u username -p cafe_db < cafe_backup.sql
+mysql -u username -p leoncafe_db < cafe_backup.sql
 ```
 
 ## Performance Considerations
@@ -181,7 +181,7 @@ Required environment variables for database connection:
 ```env
 DB_HOST=localhost
 DB_PORT=3306
-DB_NAME=cafe_db
+DB_NAME=leoncafe_db
 DB_USER=root
 DB_PASSWORD=your_password
 JWT_SECRET=your_jwt_secret

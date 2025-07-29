@@ -16,9 +16,9 @@
 
 3. **Create New Database**
    - In "Create New Database" section:
-   - Database Name: `cafe_db` (or your preferred name)
+   - Database Name: `leoncafe_db` (or your preferred name)
    - Click "Create Database"
-   - **Note down the full database name** (e.g., `cpses_leeaphrlsj_cafe_db`)
+   - **Note down the full database name** (e.g., `cpses_leeaphrlsj_leoncafe_db`)
 
 ### Step 2: Create Database User
 
@@ -79,7 +79,7 @@ CORS_ORIGIN=https://yourdomain.com
 ```env
 DB_HOST=localhost
 DB_PORT=3306
-DB_NAME=cpses_leeaphrlsj_cafe_db
+DB_NAME=cpses_leeaphrlsj_leoncafe_db
 DB_USER=cpses_leeaphrlsj_cafe_user
 DB_PASSWORD=your_strong_password
 JWT_SECRET=your_super_secret_jwt_key
