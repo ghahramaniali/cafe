@@ -2,6 +2,7 @@
 import styles from "./page.module.css";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import ProductItem from "../components/ProductItem";
 import CategoriesSection from "../components/CategoriesSection";
 import BestsellersSection from "../components/BestsellersSection";
@@ -10,6 +11,7 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 
 export default function Home() {
+  const router = useRouter();
   const [menuItems, setMenuItems] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -51,7 +53,12 @@ export default function Home() {
             <p style={{ color: "#DABB9E" }}>
               تجربه‌ای متفاوت با بهترین قهوه‌ها و نوشیدنی‌های گرم و سرد
             </p>
-            <button className={styles.ctaButton}>رفتن به منوی فروشگاه</button>
+            <button
+              className={styles.ctaButton}
+              onClick={() => router.push("/menu")}
+            >
+              رفتن به منوی فروشگاه
+            </button>
           </div>
           <div className={styles.heroImage}>
             <Image

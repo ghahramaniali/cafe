@@ -64,7 +64,7 @@ The backend will run on `http://localhost:5000`
 3. Create a `.env.local` file in the root directory with:
 
    ```
-   NEXT_PUBLIC_API_URL=http://localhost:5000/api
+   NEXT_PUBLIC_API_URL=https://leoncafe.ir/backend/api
    ```
 
 4. Start the frontend development server:

@@ -26,7 +26,7 @@ const ProductsFromApi: React.FC = () => {
         setError(null);
 
         const API_BASE_URL =
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+          process.env.NEXT_PUBLIC_API_URL || "https://leoncafe.ir/backend/api";
         const response = await fetch(`${API_BASE_URL}/products?available=true`);
 
         if (!response.ok) {
