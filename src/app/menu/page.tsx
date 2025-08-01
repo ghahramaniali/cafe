@@ -187,10 +187,7 @@ export default function ShopMenuPage() {
                   }`}
                   onClick={() => handleCategoryClick(category.id.toString())}
                 >
-                  <div
-                    className={styles.categoryIcon}
-                    style={{ backgroundColor: getCategoryColor(category.name) }}
-                  >
+                  <div className={styles.categoryIcon}>
                     {category.image_url ? (
                       <img
                         src={getImageUrl(category.image_url) || ""}

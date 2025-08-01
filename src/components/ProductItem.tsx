@@ -3,6 +3,7 @@ import React from "react";
 
 import styles from "./ProductItem.module.css";
 import { getImageUrl } from "../utils/imageUtils";
+import { formatPrice } from "../utils/displayUtils";
 
 interface ProductItemProps {
   image: string;
@@ -61,7 +62,7 @@ const ProductItem: React.FC<ProductItemProps> = ({
           price.trim() === "۰" ||
           price.trim() === "۰٫۰۰"
             ? "بپرسید"
-            : price}
+            : formatPrice(price)}
         </button>
       }
     </div>

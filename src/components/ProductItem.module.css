@@ -17,11 +17,11 @@
 }
 
 .productImage {
-  width: 90%px;
+  width: 90%;
+  min-height: 130px;
   max-height: 140px;
   object-fit: contain;
   border-radius: 0.8rem;
-
 }
 
 .productName {
