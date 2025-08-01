@@ -123,6 +123,7 @@ const Footer = () => (
       {/* Creator Credit - Full Width */}
       <div className={styles.creatorSection}>
         <p className={styles.creator}>طراحی و توسعه توسط quf</p>
+        <p className={styles.creator}>Ghahramani.Ali.2002@gmail.com</p>
       </div>
     </div>
   </footer>

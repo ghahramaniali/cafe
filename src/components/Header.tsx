@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import Sidebar from "./Sidebar";
 import styles from "./Header.module.css";
 
@@ -10,17 +11,24 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ variant = "transparent" }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const router = useRouter();
+
+  const handleLogoClick = () => {
+    router.push("/");
+  };
 
   return (
     <>
       {/* Header */}
       <header className={`${styles.header} ${styles[variant]}`}>
         <nav className={styles.nav}>
-          <div className={styles.logoContainer}>
+          <div
+            className={styles.logoContainer}
+            onClick={handleLogoClick}
+            style={{ cursor: "pointer" }}
+          >
             <Image src="/logo-leon.png" alt="logo" width={70} height={70} />
           </div>
-
-         
 
           {/* Desktop Navigation */}
           <div className={styles.desktopNav}>

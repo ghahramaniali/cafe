@@ -62,7 +62,7 @@ export default function Home() {
           </div>
           <div className={styles.heroImage}>
             <Image
-              src="/images/Cup1.png"
+              src="/images/Cup.png"
               alt="Hero Image"
               width={500}
               height={500}

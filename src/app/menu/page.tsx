@@ -155,7 +155,17 @@ export default function ShopMenuPage() {
                 } py-2 my-2 md:p-0 md:m-0 sm:p-0 sm:m-0`}
                 onClick={() => handleCategoryClick("all")}
               >
-                <div className={styles.categoryIcon}>🍽️</div>
+                <div className={styles.categoryIcon}>
+                  <img
+                    src="/logo-leon.png"
+                    alt="همه آیتم ها"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                </div>
                 <h3 className={styles.categoryName}>همه آیتم ها</h3>
               </div>
             </SwiperSlide>
@@ -193,13 +203,11 @@ export default function ShopMenuPage() {
       {/* Products Section */}
       <div className={styles.productsSection}>
         {loading ? (
-          <div className={styles.loadingState}>
-            <div className={styles.loadingIcon}>☕</div>
-            <p>در حال بارگذاری محصولات...</p>
+          <div className={styles.emptyState}>
+            <p>در حال بارگذاری آیتم ها...</p>
           </div>
         ) : filteredProducts.length === 0 ? (
           <div className={styles.emptyState}>
-            <div className={styles.emptyIcon}>😔</div>
             <p>محصولی در این دسته‌بندی یافت نشد</p>
           </div>
         ) : (

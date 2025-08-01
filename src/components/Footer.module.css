@@ -644,8 +644,8 @@
   }
 
   .mainContent {
-    padding: 2rem 0 1.5rem;
-    gap: 2rem;
+    padding: 1.5rem 0 1rem;
+    gap: 1.5rem;
   }
 
   .logo {
@@ -764,7 +764,7 @@
   }
 
   .footerBottom {
-    padding: 1.5rem 0;
+    padding: 1rem 0;
   }
 
   .bottomContent {

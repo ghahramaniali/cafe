@@ -31,6 +31,9 @@ const ProductItem: React.FC<ProductItemProps> = ({
     !processedImage.includes("127.0.0.1") &&
     processedImage.trim() !== "";
 
+  console.warn(price);
+
+  console.warn(typeof price);
   return (
     <div className={styles.productCard}>
       {isValidImage ? (
@@ -53,7 +56,12 @@ const ProductItem: React.FC<ProductItemProps> = ({
 
       {
         <button className={styles.orderButton} onClick={onOrderClick}>
-          {price}
+          {price.trim() === "0" ||
+          price.trim() === "0.00" ||
+          price.trim() === "۰" ||
+          price.trim() === "۰٫۰۰"
+            ? "بپرسید"
+            : price}
         </button>
       }
     </div>

@@ -331,6 +331,11 @@
   cursor: pointer;
   min-width: 150px;
 }
+@media (max-width: 500px) {
+  .categoryCard {
+    padding: 1rem;
+  }
+}
 
 .categoryCard:hover {
   transform: translateY(-5px);
@@ -430,6 +435,10 @@
   cursor: pointer;
   transition: all 0.3s;
   width: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .orderButton:hover {
