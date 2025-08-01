@@ -40,7 +40,7 @@ const BestsellersSection: React.FC = () => {
   if (loading) {
     return (
       <section className={styles.bestsellers}>
-        <h2>محبوب ترین های این ماه</h2>
+        <h2>محبوب ترین های ماه</h2>
         <Swiper
           modules={[Navigation, Pagination]}
           spaceBetween={20}
@@ -103,7 +103,7 @@ const BestsellersSection: React.FC = () => {
   if (error) {
     return (
       <section className={styles.bestsellers}>
-        <h2>محبوب ترین های این ماه</h2>
+        <h2>محبوب ترین های ماه</h2>
         <p style={{ textAlign: "center", color: "#666" }}>{error}</p>
       </section>
     );
@@ -111,7 +111,7 @@ const BestsellersSection: React.FC = () => {
 
   return (
     <section className={styles.bestsellers}>
-      <h2>محبوب ترین های این ماه</h2>
+      <h2>محبوب ترین های ماه</h2>
       <Swiper
         modules={[Navigation, Pagination]}
         spaceBetween={20}

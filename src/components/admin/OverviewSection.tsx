@@ -36,7 +36,7 @@ export default function OverviewSection({
 
       {/* Top Products */}
       <div className={styles.topProducts}>
-        <h3>محبوب ترین های این ماه </h3>
+        <h3>محبوب ترین های ماه </h3>
         <div className={styles.productsList}>
           {products.slice(0, 4).map((product, index) => (
             <div key={product.id} className={styles.productItem}>

@@ -6,7 +6,7 @@ export const getImageUrl = (
 
   const SERVER_BASE_URL =
     process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ||
-    "http://localhost:5000";
+    "https://leoncafe.ir/backend";
 
   // If the path already starts with http/https, return as is
   if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
@@ -26,6 +26,6 @@ export const getImageUrl = (
 export const getServerBaseUrl = (): string => {
   return (
     process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ||
-    "http://localhost:5000"
+    "https://leoncafe.ir/backend"
   );
 };

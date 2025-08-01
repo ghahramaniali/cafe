@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, FreeMode } from "swiper/modules";
 import { productsApi, categoriesApi, Product, Category } from "../../utils/api";
+import { getImageUrl } from "../../utils/imageUtils";
 import ProductItem from "../../components/ProductItem";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
@@ -22,7 +23,7 @@ export default function ShopMenuPage() {
   const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
-  // Category icons mapping
+  // Category icons mapping (fallback when images are not available)
   const categoryIcons: { [key: string]: string } = {
     coffee: "🫘",
     espresso: "☕",
@@ -190,7 +191,35 @@ export default function ShopMenuPage() {
                     className={styles.categoryIcon}
                     style={{ backgroundColor: getCategoryColor(category.name) }}
                   >
-                    {getCategoryIcon(category.name)}
+                    {category.image_url ? (
+                      <img
+                        src={getImageUrl(category.image_url) || ""}
+                        alt={category.name}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "contain",
+                          borderRadius: "50%",
+                        }}
+                        onError={(e) => {
+                          // Fallback to icon if image fails to load
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = "none";
+                          const parent = target.parentElement;
+                          if (parent) {
+                            parent.innerHTML = getCategoryIcon(category.name);
+                            parent.style.display = "flex";
+                            parent.style.alignItems = "center";
+                            parent.style.justifyContent = "center";
+                            parent.style.fontSize = "24px";
+                          }
+                        }}
+                      />
+                    ) : (
+                      <span style={{ fontSize: "24px" }}>
+                        {getCategoryIcon(category.name)}
+                      </span>
+                    )}
                   </div>
                   <h3 className={styles.categoryName}>{category.name}</h3>
                 </div>
