@@ -2,6 +2,14 @@ import React, { useState, useCallback } from "react";
 import styles from "../../app/admin/dashboard/dashboard.module.css";
 import { Product, Category } from "../../types/admin";
 import { getImageUrl } from "../../utils/imageUtils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPlus,
+  faFolder,
+  faEdit,
+  faTrash,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface CategoriesSectionProps {
   categories: Category[];
@@ -283,7 +291,8 @@ export default function CategoriesSection({
       <div className={styles.sectionHeader}>
         <h2>مدیریت دسته‌بندی‌ها</h2>
         <button className={styles.addButton} onClick={openAddCategoryModal}>
-          + افزودن دسته‌بندی جدید
+          <FontAwesomeIcon icon={faPlus} />
+          افزودن دسته‌بندی جدید
         </button>
       </div>
 
@@ -303,7 +312,7 @@ export default function CategoriesSection({
                   }}
                 />
               ) : (
-                <span>📂</span>
+                <FontAwesomeIcon icon={faFolder} />
               )}
             </div>
             <div className={styles.categoryDetails}>
@@ -321,12 +330,14 @@ export default function CategoriesSection({
                 className={styles.editButton}
                 onClick={() => openEditCategoryModal(category)}
               >
+                <FontAwesomeIcon icon={faEdit} />
                 ویرایش
               </button>
               <button
                 className={styles.deleteButton}
                 onClick={() => handleDeleteCategory(category.id)}
               >
+                <FontAwesomeIcon icon={faTrash} />
                 حذف
               </button>
             </div>
@@ -354,7 +365,7 @@ export default function CategoriesSection({
                 }}
                 className={styles.closeButton}
               >
-                ✕
+                <FontAwesomeIcon icon={faTimes} />
               </button>
             </div>
             <form onSubmit={handleCategorySubmit} className={styles.modalForm}>

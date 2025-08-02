@@ -8,6 +8,8 @@ import CategoriesSection from "../../../components/admin/CategoriesSection";
 import SettingsSection from "../../../components/admin/SettingsSection";
 import Sidebar from "../../../components/admin/Sidebar";
 import Header from "../../../components/admin/Header";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
 // API Base URL
 const API_BASE_URL =
@@ -198,7 +200,9 @@ export default function AdminDashboard() {
     return (
       <div className={styles.dashboard}>
         <div className={styles.loadingContainer}>
-          <div className={styles.loadingSpinner}>🔄</div>
+          <div className={styles.loadingSpinner}>
+            <FontAwesomeIcon icon={faSpinner} spin />
+          </div>
           <p>در حال بارگذاری...</p>
         </div>
       </div>
@@ -209,7 +213,9 @@ export default function AdminDashboard() {
     return (
       <div className={styles.dashboard}>
         <div className={styles.errorContainer}>
-          <div className={styles.errorIcon}>❌</div>
+          <div className={styles.errorIcon}>
+            <FontAwesomeIcon icon={faTimesCircle} />
+          </div>
           <h3>خطا در بارگذاری داده‌ها</h3>
           <p>{error}</p>
           <button onClick={fetchData} className={styles.retryButton}>

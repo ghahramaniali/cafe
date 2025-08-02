@@ -2,6 +2,15 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../../app/admin/dashboard/dashboard.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChartBar,
+  faCoffee,
+  faFolder,
+  faCog,
+  faHome,
+  faSignOutAlt,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -34,7 +43,8 @@ export default function Sidebar({
           }`}
           onClick={() => onTabChange("overview")}
         >
-          📊 نمای کلی
+          <FontAwesomeIcon icon={faChartBar} />
+          نمای کلی
         </button>
         <button
           className={`${styles.navItem} ${
@@ -42,7 +52,8 @@ export default function Sidebar({
           }`}
           onClick={() => onTabChange("products")}
         >
-          ☕ محصولات
+          <FontAwesomeIcon icon={faCoffee} />
+          محصولات
         </button>
         <button
           className={`${styles.navItem} ${
@@ -50,7 +61,8 @@ export default function Sidebar({
           }`}
           onClick={() => onTabChange("categories")}
         >
-          📂 دسته‌بندی‌ها
+          <FontAwesomeIcon icon={faFolder} />
+          دسته‌بندی‌ها
         </button>
         <button
           className={`${styles.navItem} ${
@@ -58,15 +70,20 @@ export default function Sidebar({
           }`}
           onClick={() => onTabChange("settings")}
         >
-          ⚙️ تنظیمات
+          <FontAwesomeIcon icon={faCog} />
+          تنظیمات
         </button>
       </nav>
 
       <div className={styles.sidebarFooter}>
         <Link href="/" className={styles.backLink}>
-          🏠 بازگشت به سایت
+          <FontAwesomeIcon icon={faHome} />
+          بازگشت به سایت
         </Link>
-        <button className={styles.logoutButton}>🚪 خروج</button>
+        <button className={styles.logoutButton}>
+          <FontAwesomeIcon icon={faSignOutAlt} />
+          خروج
+        </button>
       </div>
     </div>
   );

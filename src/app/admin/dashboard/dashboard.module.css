@@ -941,3 +941,176 @@
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(212, 165, 116, 0.3);
 }
+
+/* FontAwesome Icon Styles */
+.navItem svg,
+.backLink svg,
+.logoutButton svg,
+.userInfo svg,
+.addButton svg,
+.editButton svg,
+.deleteButton svg,
+.closeButton svg,
+.saveButton svg {
+  margin-left: 8px;
+  width: 16px;
+  height: 16px;
+}
+
+.statIcon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.categoryIcon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.imagePlaceholder svg {
+  width: 32px;
+  height: 32px;
+  color: #6c757d;
+}
+
+.productFavorite svg {
+  width: 14px;
+  height: 14px;
+  margin-left: 4px;
+  color: #ffc107;
+}
+
+.loadingSpinner svg {
+  width: 32px;
+  height: 32px;
+  color: #d4a574;
+}
+
+.errorIcon svg {
+  width: 32px;
+  height: 32px;
+  color: #dc3545;
+}
+
+.settingsSection h2 svg,
+.settingCard h3 svg,
+.settingItem label svg {
+  margin-left: 8px;
+  width: 16px;
+  height: 16px;
+}
+
+/* Ensure proper alignment for buttons with icons */
+.navItem,
+.backLink,
+.logoutButton,
+.addButton,
+.editButton,
+.deleteButton,
+.saveButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Header user info alignment */
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Product actions alignment */
+.productActions {
+  display: flex;
+  gap: 10px;
+}
+
+.editButton,
+.deleteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* Category actions alignment */
+.categoryActions {
+  display: flex;
+  gap: 10px;
+}
+
+.categoryActions .editButton,
+.categoryActions .deleteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* Modal header alignment */
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 1px solid #e9ecef;
+  background: #f8f9fa;
+  border-radius: 15px 15px 0 0;
+}
+
+.modalHeader h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #000000;
+  display: flex;
+  align-items: center;
+}
+
+.closeButton svg {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.closeButton:hover {
+  background: #e9ecef;
+  color: #dc3545;
+}
+
+/* Settings section icon alignment */
+.settingsSection h2,
+.settingCard h3,
+.settingItem label {
+  display: flex;
+  align-items: center;
+}
+
+/* Product favorite icon alignment */
+.productFavorite {
+  display: flex;
+  align-items: center;
+  color: #ffc107;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Loading and error states icon alignment */
+.loadingContainer,
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  text-align: center;
+}
+
+.loadingSpinner,
+.errorIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}

@@ -1,6 +1,8 @@
 import React from "react";
 import styles from "../../app/admin/dashboard/dashboard.module.css";
 import { Product, Stats } from "../../types/admin";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCoffee, faFolder, faStar } from "@fortawesome/free-solid-svg-icons";
 
 interface OverviewSectionProps {
   products: Product[];
@@ -18,7 +20,9 @@ export default function OverviewSection({
       {/* Stats Cards */}
       <div className={styles.statsGrid}>
         <div className={styles.statCard}>
-          <div className={styles.statIcon}>☕</div>
+          <div className={styles.statIcon}>
+            <FontAwesomeIcon icon={faCoffee} />
+          </div>
           <div className={styles.statContent}>
             <h3>{stats.totalProducts}</h3>
             <p>محصولات</p>
@@ -26,7 +30,9 @@ export default function OverviewSection({
         </div>
 
         <div className={styles.statCard}>
-          <div className={styles.statIcon}>📂</div>
+          <div className={styles.statIcon}>
+            <FontAwesomeIcon icon={faFolder} />
+          </div>
           <div className={styles.statContent}>
             <h3>{stats.totalCategories}</h3>
             <p>دسته‌بندی‌ها</p>

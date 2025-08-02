@@ -3,6 +3,15 @@ import Image from "next/image";
 import styles from "../../app/admin/dashboard/dashboard.module.css";
 import { Product, Category } from "../../types/admin";
 import { getImageUrl } from "../../utils/imageUtils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPlus,
+  faCoffee,
+  faEdit,
+  faTrash,
+  faTimes,
+  faStar,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface ProductsSectionProps {
   products: Product[];
@@ -316,7 +325,8 @@ export default function ProductsSection({
       <div className={styles.sectionHeader}>
         <h2>مدیریت محصولات</h2>
         <button className={styles.addButton} onClick={openAddProductModal}>
-          + افزودن محصول جدید
+          <FontAwesomeIcon icon={faPlus} />
+          افزودن محصول جدید
         </button>
       </div>
 
@@ -333,7 +343,9 @@ export default function ProductsSection({
                   className={styles.productImage}
                 />
               ) : (
-                <div className={styles.imagePlaceholder}>☕</div>
+                <div className={styles.imagePlaceholder}>
+                  <FontAwesomeIcon icon={faCoffee} />
+                </div>
               )}
             </div>
             <div className={styles.productDetails}>
@@ -346,7 +358,10 @@ export default function ProductsSection({
                 موجودی: {product.is_available ? "موجود" : "ناموجود"}
               </p>
               {product.is_favorite && (
-                <p className={styles.productFavorite}>⭐ محبوب</p>
+                <p className={styles.productFavorite}>
+                  <FontAwesomeIcon icon={faStar} />
+                  محبوب
+                </p>
               )}
             </div>
             <div className={styles.productActions}>
@@ -354,12 +369,14 @@ export default function ProductsSection({
                 className={styles.editButton}
                 onClick={() => openEditProductModal(product)}
               >
+                <FontAwesomeIcon icon={faEdit} />
                 ویرایش
               </button>
               <button
                 className={styles.deleteButton}
                 onClick={() => handleDeleteProduct(product.id)}
               >
+                <FontAwesomeIcon icon={faTrash} />
                 حذف
               </button>
             </div>
@@ -385,7 +402,7 @@ export default function ProductsSection({
                 }}
                 className={styles.closeButton}
               >
-                ✕
+                <FontAwesomeIcon icon={faTimes} />
               </button>
             </div>
             <form

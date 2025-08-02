@@ -1,5 +1,7 @@
 import React from "react";
 import styles from "../../app/admin/dashboard/dashboard.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars, faUser } from "@fortawesome/free-solid-svg-icons";
 
 interface HeaderProps {
   isSidebarOpen: boolean;
@@ -31,11 +33,12 @@ export default function Header({
   return (
     <header className={styles.header}>
       <button className={styles.menuToggle} onClick={onToggleSidebar}>
-        ☰
+        <FontAwesomeIcon icon={faBars} />
       </button>
       <div className={styles.headerTitle}>{getTabTitle()}</div>
       <div className={styles.userInfo}>
-        <span>👤 ادمین</span>
+        <FontAwesomeIcon icon={faUser} />
+        <span>ادمین</span>
       </div>
     </header>
   );
