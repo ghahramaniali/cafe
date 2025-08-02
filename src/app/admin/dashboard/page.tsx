@@ -233,6 +233,7 @@ export default function AdminDashboard() {
         isOpen={isSidebarOpen}
         activeTab={activeTab}
         onTabChange={setActiveTab}
+        onClose={() => setIsSidebarOpen(false)}
       />
 
       {/* Main Content */}

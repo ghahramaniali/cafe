@@ -41,9 +41,11 @@ const Header: React.FC<HeaderProps> = ({ variant = "transparent" }) => {
 
           {/* Mobile Hamburger Menu */}
           <button
-            className={styles.hamburgerButton}
-            onClick={() => setSidebarOpen(true)}
-            aria-label="Open menu"
+            className={`${styles.hamburgerButton} ${
+              sidebarOpen ? styles.active : ""
+            }`}
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            aria-label="Toggle menu"
           >
             <span></span>
             <span></span>

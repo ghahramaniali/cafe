@@ -91,6 +91,8 @@
   cursor: pointer;
   padding: 0;
   z-index: 10;
+  position: relative;
+  transition: all 0.3s ease;
 }
 
 .hamburgerButton span {
@@ -100,10 +102,32 @@
   border-radius: 2px;
   transition: all 0.3s ease;
   transform-origin: center;
+  position: relative;
+}
+
+.hamburgerButton:hover {
+  transform: scale(1.1);
 }
 
 .hamburgerButton:hover span {
   background: #d4af37;
+}
+
+.hamburgerButton:active {
+  transform: scale(0.95);
+}
+
+/* Hamburger Animation */
+.hamburgerButton.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.hamburgerButton.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburgerButton.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -6px);
 }
 
 /* Responsive Design */
